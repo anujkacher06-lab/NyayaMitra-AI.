@@ -1,0 +1,125 @@
+{
+  "category": "workplace_salary_issue",
+  "title": {
+    "en": "Workplace & Salary Issues",
+    "hi": "कार्यस्थल और वेतन संबंधी समस्याएं"
+  },
+  "keywords": [
+    "salary unpaid",
+    "delayed wages",
+    "employer not paying",
+    "wrongful termination",
+    "full and final settlement",
+    "fnf not cleared",
+    "relieving letter withheld",
+    "pf not deposited",
+    "gratuity denial",
+    "unlawful deduction",
+    "notice pay dispute",
+    "workplace harassment",
+    "illegal dismissal",
+    "वेतन नहीं मिला",
+    "सैलरी रुकी हुई",
+    "नौकरी से निकाल दिया",
+    "पीएफ",
+    "रिलीविंग लेटर"
+  ],
+  "applicable_laws": [
+    "Payment of Wages Act, 1936 (Section 5 - Time of payment of wages, Section 15 - Claims arising out of deductions or delay)",
+    "Industrial Disputes Act, 1947 (Section 25F - Conditions precedent to retrenchment)",
+    "Employees' Provident Funds and Miscellaneous Provisions Act, 1952",
+    "Payment of Gratuity Act, 1972",
+    "State Shops and Commercial Establishments Acts"
+  ],
+  "simple_explanation": {
+    "en": "Indian labour and employment laws mandate that wages earned by employees must be disbursed on or before designated monthly statutory timelines, and full & final settlements or statutory dues cannot be arbitrarily withheld upon separation.",
+    "hi": "भारतीय श्रम कानून के तहत नियोक्ता (कंपनी) को कामगार या कर्मचारी का वैध वेतन तय समयसीमा के भीतर देना अनिवार्य है। नौकरी छोड़ने पर भी कंपनी वेतन, पीएफ, ग्रेच्युटी या रिलीविंग लेटर को बिना वैध कारण के रोक नहीं सकती।"
+  },
+  "immediate_actions": {
+    "en": [
+      "Send a formal, polite but firm demand email to HR, Finance, and Management clearly detailing the unpaid salary months, total pending amount, and requesting disbursement within 7 to 10 working days.",
+      "Collect and download all employment records to a personal drive: Appointment Letter, increment letters, past salary slips, Form 16, attendance logs, and resignation/exit correspondence.",
+      "Check your EPFO Member Passbook online (passbook.epfindia.gov.in) to verify if employer PF contributions have been deducted from your salary but not deposited.",
+      "Lodge an online grievance on the Ministry of Labour's Samadhan Portal (samadhan.labour.gov.in) or file a complaint with the local Labour Commissioner.",
+      "If the employer remains non-responsive, submit a formal complaint to the District Labour Officer under Section 15 of the Payment of Wages Act or issue a statutory legal notice through a panel lawyer via Tele-Law / NALSA."
+    ],
+    "hi": [
+      "कंपनी के एचआर और प्रबंधन को बकाया वेतन, महीनों का विवरण और कुल राशि लिखते हुए 7 से 10 दिनों में भुगतान करने हेतु ईमेल भेजें।",
+      "अपने सभी जरूरी दस्तावेज व्यक्तिगत ईमेल/ड्राइव पर सहेजें: नियुक्ति पत्र (Offer/Appointment Letter), पिछले वेतन पर्चियां (Pay Slips), अटेंडेंस रिकॉर्ड और त्यागपत्र का आदान-प्रदान।",
+      "ईपीएफओ (EPFO) पोर्टल पर जाकर पासबुक चेक करें कि क्या आपकी सैलरी से कटा पीएफ सरकार के खाते में जमा हुआ है या नहीं।",
+      "श्रम मंत्रालय के समाधान पोर्टल (samadhan.labour.gov.in) पर ऑनलाइन शिकायत दर्ज करें या जिला श्रम आयुक्त (Labour Commissioner) के पास शिकायत दें।",
+      "यदि कंपनी जवाब न दे, तो टेली-लॉ या नालसा (NALSA) के माध्यम से कानूनी नोटिस जारी करवाएं।"
+    ]
+  },
+  "evidence_checklist": {
+    "en": [
+      "Original Offer Letter / Employment Agreement signed by both parties",
+      "Monthly Salary Slips for the last 3-6 months showing breakdown",
+      "Bank Account Statement showing historical salary credits and the absence of disputed month credits",
+      "Company Identity Card / Badge",
+      "Official Attendance logs, Biometric records, timesheet exports, or daily login records",
+      "Resignation letter, acceptance email, or termination notice",
+      "All email communications with HR and reporting managers regarding pending dues",
+      "EPFO passbook statement indicating PF deduction or failure to deposit"
+    ],
+    "hi": [
+      "ऑफर लेटर / नियुक्ति पत्र (दोनों पक्षों द्वारा हस्ताक्षरित)",
+      "पिछले 3 से 6 महीनों की सैलरी स्लिप (Pay Slips)",
+      "बैंक स्टेटमेंट जिसमें पूर्व में सैलरी आने और विवादित महीनों में न आने का प्रमाण हो",
+      "कंपनी पहचान पत्र (ID Card)",
+      "उपस्थिति रिकॉर्ड (Attendance Logs, बायोमेट्रिक रिकॉर्ड या आधिकारिक ईमेल)",
+      "इस्तीफा पत्र (Resignation), उसकी स्वीकृति ईमेल या सेवा समाप्ति का नोटिस",
+      "एचआर या प्रबंधन के साथ बकाए वेतन को लेकर हुए सभी ईमेल का प्रिंट",
+      "ईपीएफओ पासबुक स्टेटमेंट (यदि पीएफ काटा गया पर जमा नहीं हुआ)"
+    ]
+  },
+  "official_resources": [
+    {
+      "name": "Samadhan Portal (Ministry of Labour & Employment)",
+      "name_hi": "समाधान पोर्टल (श्रम एवं रोजगार मंत्रालय)",
+      "authority": "Chief Labour Commissioner (Central), Ministry of Labour",
+      "helpline": "011-23710446",
+      "url": "https://samadhan.labour.gov.in",
+      "description": "National dispute resolution portal for conciliation and settlement of industrial and employment disputes."
+    },
+    {
+      "name": "EPFiGMS (EPFO Grievance Management System)",
+      "name_hi": "ईपीएफओ शिकायत निवारण प्रणाली",
+      "authority": "Employees' Provident Fund Organisation, Govt. of India",
+      "helpline": "1800 118 005 (Toll Free)",
+      "url": "https://epfigms.gov.in",
+      "description": "Dedicated portal for reporting non-deposit of PF by employers, PF transfer delays, or pension grievances."
+    },
+    {
+      "name": "State Labour Commissioner Office",
+      "name_hi": "राज्य श्रम आयुक्त कार्यालय",
+      "authority": "Department of Labour (Respective State Government)",
+      "helpline": "Varies by State / 155214",
+      "url": "https://labour.gov.in",
+      "description": "Enforces Payment of Wages Act and Shops & Establishments Acts for non-central entities."
+    },
+    {
+      "name": "Tele-Law (Department of Justice)",
+      "name_hi": "टेली-लॉ सेवा (न्याय विभाग)",
+      "authority": "Ministry of Law and Justice, Govt. of India",
+      "helpline": "14488",
+      "url": "https://www.tele-law.in",
+      "description": "Provides instant advice from advocates for employees seeking pre-litigation guidance on salary and employment recovery."
+    },
+    {
+      "name": "NALSA Legal Services",
+      "name_hi": "नालसा विधिक सेवाएं",
+      "authority": "National Legal Services Authority",
+      "helpline": "15100",
+      "url": "https://nalsa.gov.in",
+      "description": "Free legal representation for industrial workmen and economically vulnerable employees under Section 12(h) of LSA Act."
+    }
+  ],
+  "complaint_template": {
+    "employer_salary_demand": {
+      "en": "FORMAL DEMAND NOTICE FOR PAYMENT OF OUTSTANDING WAGES / DUES\n\nDate: [CURRENT_DATE]\n\nTo,\nThe Managing Director / Head of Human Resources,\n[COMPANY_NAME],\nRegistered Office: [COMPANY_ADDRESS]\nOfficial HR Email: [HR_EMAIL]\n\nSubject: Formal Demand for Immediate Disbursement of Unpaid Salary for the Month(s) of [UNPAID_MONTHS] amounting to ₹[TOTAL_AMOUNT]\n\nDear Sir/Madam,\n\nI was employed with [COMPANY_NAME] as [DESIGNATION] (Employee ID: [EMPLOYEE_ID]) having joined on [JOINING_DATE] [and having separated/tendered resignation on [RELIEVING_DATE] / and currently in active service].\n\n1. Factual Matrix:\nIn terms of the employment contract, I am entitled to receive a monthly salary of ₹[MONTHLY_SALARY]. I have discharged all my professional responsibilities diligently as evidenced by company attendance records.\n\n2. Outstanding Dues:\nDespite completing work, the company has unlawfully failed to disburse my earned salary for [MONTHS_AND_YEAR, e.g. June and July 2026], amounting to a net total of ₹[TOTAL_AMOUNT]. Furthermore, [mention if F&F settlement / PF deduction deposit / relieving letter is pending].\n\n3. Pre-notice Communications:\nI sent multiple reminder emails on [DATES_OF_EMAILS] requesting settlement of my legitimate dues. However, no satisfactory response or payment has been made till date.\n\n4. Statutory Violations:\nThe withholding of earned wages is in direct contravention of Section 5 and Section 15 of the Payment of Wages Act, 1936, and applicable state Shops and Establishments Act, constituting an actionable breach of contract and statutory default.\n\n5. Final Requisition:\nI hereby call upon you to disburse the entire outstanding amount of ₹[TOTAL_AMOUNT] to my registered salary bank account within 7 (seven) days of receipt of this notice, and issue my Full & Final Settlement statement along with the Experience/Relieving Certificate.\n\nShould you fail to comply within the stipulated 7 days, I shall be left with no choice but to initiate statutory dispute proceedings before the Labour Commissioner / Authority under the Payment of Wages Act, and file a formal claim on the Ministry of Labour's Samadhan Portal, holding the company and its directors personally liable for all costs and interest at 18% p.a.\n\nYours sincerely,\n\n[USER_NAME]\nEmployee ID: [EMPLOYEE_ID]\nDesignation: [DESIGNATION]\nContact No: [USER_PHONE]\nEmail: [USER_EMAIL]\nBank A/C Details for Transfer: A/C No: [ACCOUNT_NO], IFSC: [IFSC_CODE], Bank: [BANK_NAME]",
+      "hi": "बकाया वेतन / पारिश्रमिक के भुगतान हेतु कानूनी मांग पत्र (डिमांड नोटिस)\n\nदिनांक: [CURRENT_DATE]\n\nसेवा में,\nप्रबंध निदेशक / मानव संसाधन प्रमुख (HR),\n[COMPANY_NAME],\nपंजीकृत कार्यालय: [COMPANY_ADDRESS]\nआधिकारिक ईमेल: [HR_EMAIL]\n\nविषय: माह [UNPAID_MONTHS] के बकाया वेतन कुल ₹[TOTAL_AMOUNT] के तत्काल भुगतान हेतु नोटिस\n\nमहोदय/महोदया,\n\nमैं प्रार्थी [USER_NAME], कर्मचारी आईडी: [EMPLOYEE_ID], आपकी कंपनी [COMPANY_NAME] में [DESIGNATION] के पद पर दिनांक [JOINING_DATE] से कार्यरत था/हूँ [तथा दिनांक [RELIEVING_DATE] को सेवामुक्त हुआ / इस्तीफा दिया]।\n\n1. मुख्य तथ्य:\nनियुक्ति अनुबंध की शर्तों के अनुसार मेरा मासिक वेतन ₹[MONTHLY_SALARY] निर्धारित था। मैंने अपनी सभी आधिकारिक जिम्मेदारियों का निष्ठापूर्वक निर्वहन किया है, जिसका प्रमाण कंपनी के उपस्थिति रिकॉर्ड में दर्ज है।\n\n2. बकाया राशि का विवरण:\nसेवाएं देने के बावजूद कंपनी द्वारा माह [MONTHS_AND_YEAR] का अर्जित वेतन कुल ₹[TOTAL_AMOUNT] अब तक नहीं दिया गया है। [इसके अतिरिक्त फुल एंड फाइनल सेटलमेंट तथा अनुभव/रिलीविंग प्रमाण पत्र भी लंबित है]।\n\n3. पूर्व पत्राचार:\nमैंने दिनांक [DATES_OF_EMAILS] को ईमेल भेजकर बकाए वेतन के भुगतान का निवेदन किया था, परंतु आपकी ओर से अब तक कोई सकारात्मक कदम नहीं उठाया गया।\n\n4. कानूनी उल्लंघन:\nवेतन रोकना मजदूरी संदाय अधिनियम, 1936 (Payment of Wages Act) की धारा 5 व 15 तथा संबंधित राज्य दुकान एवं वाणिज्यिक प्रतिष्ठान अधिनियम का खुला उल्लंघन है।\n\n5. अंतिम मांग:\nअतः आपको सूचित किया जाता है कि इस नोटिस की प्राप्ति के 7 (सात) दिनों के भीतर मेरी बकाया राशि ₹[TOTAL_AMOUNT] मेरे पंजीकृत बैंक खाते में अंतरित करें तथा अनापत्ति/रिलीविंग प्रमाण पत्र जारी करें।\n\nयदि निर्धारित अवधि में भुगतान नहीं किया गया, तो मैं श्रम आयुक्त (Labour Commissioner) तथा श्रम मंत्रालय के समाधान पोर्टल (Samadhan Portal) पर वाद दायर करने हेतु बाध्य होऊँगा, जिसमें संपूर्ण खर्च, मानसिक क्षतिपूर्ति तथा 18% वार्षिक ब्याज की देनदारी कंपनी प्रबंधन की होगी।\n\nभवदीय,\n\n[USER_NAME]\nकर्मचारी आईडी: [EMPLOYEE_ID]\nपद: [DESIGNATION]\nमोबाइल नंबर: [USER_PHONE]\nईमेल: [USER_EMAIL]\nबैंक खाता विवरण: खाता संख्या: [ACCOUNT_NO], IFSC: [IFSC_CODE], बैंक: [BANK_NAME]"
+    }
+  },
+  "verified_date": "2026-07-16"
+}

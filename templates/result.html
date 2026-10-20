@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NyayaMitra AI | Legal Guidance Analysis</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <header class="header-glass">
+    <div class="nav-container">
+      <a href="/" class="brand-wrapper">
+        <div class="brand-emblem">⚖️</div>
+        <div class="brand-text">
+          <h1>NyayaMitra AI</h1>
+          <p>न्यायमित्र • Legal Information Assistant</p>
+        </div>
+      </a>
+
+      <div class="nav-actions">
+        <a href="/" class="btn-secondary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          Ask Another Question
+        </a>
+        <a href="/history" class="nav-link">Past Queries</a>
+      </div>
+    </div>
+  </header>
+
+  <main style="max-width: 960px; margin: 2rem auto 4rem; padding: 0 1.25rem;">
+    
+    <!-- Result Header -->
+    <div class="result-header">
+      {% set cat = result.category_id or 'cyber_fraud' %}
+      <div class="category-tag-badge {% if 'cyber' in cat %}tag-cyber{% elif 'consumer' in cat %}tag-consumer{% else %}tag-workplace{% endif %}">
+        <span>⚖️ Verified Legal Category:</span>
+        <strong>{{ result.category }}</strong>
+      </div>
+      
+      <h2 style="font-size: 1.75rem; font-weight: 800; margin-bottom: 0.5rem; letter-spacing: -0.02em;">
+        Procedural Legal Guidance & Next Steps
+      </h2>
+      <p style="color: var(--text-muted); font-size: 0.95rem;">
+        Synthesized strictly from verified statutes on <strong>India Code</strong> and official Government portals.
+      </p>
+    </div>
+
+    <!-- 1. Simple Explanation -->
+    <section class="card-block">
+      <h3>
+        <span style="font-size: 1.4rem;">💡</span>
+        <span>1. Simple Explanation / सरल व्याख्या</span>
+      </h3>
+      <p style="font-size: 1.05rem; color: #f1f5f9; line-height: 1.65; background: rgba(10, 15, 29, 0.4); padding: 1.25rem; border-radius: var(--radius-sm); border-left: 3px solid var(--accent-blue);">
+        {{ result.explanation }}
+      </p>
+    </section>
+
+    <!-- 2. Immediate Actions -->
+    <section class="card-block">
+      <h3>
+        <span style="font-size: 1.4rem;">🚨</span>
+        <span>2. Immediate Actions / तत्काल आवश्यक कदम</span>
+      </h3>
+      <ul class="step-list">
+        {% for action in result.actions %}
+        <li class="step-item">
+          <div class="step-number">{{ loop.index }}</div>
+          <div class="step-content">{{ action }}</div>
+        </li>
+        {% endfor %}
+      </ul>
+    </section>
+
+    <!-- 3. Documents & Evidence Checklist -->
+    <section class="card-block">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h3 style="margin-bottom: 0;">
+          <span style="font-size: 1.4rem;">📋</span>
+          <span>3. Documents & Evidence Checklist / जरूरी साक्ष्य</span>
+        </h3>
+        <span id="checklistCounter" style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); color: #34d399; font-size: 0.8rem; font-weight: 700; padding: 0.2rem 0.65rem; border-radius: 999px;">
+          0 / {{ result.evidence|length }} Ready
+        </span>
+      </div>
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
+        Tick off items as you gather them. Preserving primary evidence is critical for police reporting, consumer fora, and labour conciliation.
+      </p>
+      <div class="checklist-container">
+        {% for item in result.evidence %}
+        <div class="check-item">
+          <input type="checkbox" id="chk_{{ loop.index }}" class="evidence-chk">
+          <label for="chk_{{ loop.index }}">{{ item }}</label>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- 4. Official Resources & Helplines -->
+    <section class="card-block">
+      <h3>
+        <span style="font-size: 1.4rem;">🏛️</span>
+        <span>4. Official Help Resources & Helplines / आधिकारिक सहायता</span>
+      </h3>
+      <div class="resources-grid">
+        {% for res in result.official_resources %}
+        <div class="resource-card">
+          <div class="res-header">
+            <div class="res-title">{{ res.name }}</div>
+            <div class="res-authority">{{ res.authority }}</div>
+          </div>
+          {% if res.helpline and res.helpline != 'N/A' %}
+          <div class="res-helpline">
+            <span>📞 Helpline: {{ res.helpline }}</span>
+          </div>
+          {% endif %}
+          <p style="font-size: 0.82rem; color: var(--text-muted); margin: 0.35rem 0;">{{ res.description }}</p>
+          {% if res.url %}
+          <a href="{{ res.url }}" target="_blank" rel="noopener noreferrer" class="res-link">
+            <span>Visit Official Portal</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+          </a>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- 5. Applicable Legislation (India Code) -->
+    {% if result.applicable_laws %}
+    <section class="card-block" style="border-left: 3px solid #10b981;">
+      <h3>
+        <span style="font-size: 1.4rem;">📖</span>
+        <span>5. Applicable Enforced Legislation (India Code)</span>
+      </h3>
+      <ul style="padding-left: 1.25rem; font-size: 0.92rem; color: #cbd5e1; display: flex; flex-direction: column; gap: 0.4rem;">
+        {% for law in result.applicable_laws %}
+        <li><strong>{{ law }}</strong></li>
+        {% endfor %}
+      </ul>
+      <p style="font-size: 0.78rem; color: var(--text-dim); margin-top: 0.75rem;">
+        * Note: Criminal provisions reference the Bharatiya Nyaya Sanhita (BNS), 2023 in force since July 1, 2024. Old IPC provisions are deprecated.
+      </p>
+    </section>
+    {% endif %}
+
+    <!-- 6. Complaint Draft Option -->
+    <section class="card-block" style="border: 1px solid rgba(245, 158, 11, 0.3);">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.85rem;">
+        <h3>
+          <span style="font-size: 1.4rem;">📝</span>
+          <span>6. Editable Formal Complaint Draft / शिकायत प्रारूप</span>
+        </h3>
+        <button type="button" class="btn-secondary" onclick="openDraftModal()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+          </svg>
+          Customize Details (Name, Amount, Date)
+        </button>
+      </div>
+
+      <p style="font-size: 0.86rem; color: var(--text-muted); margin-bottom: 1rem;">
+        This draft has been prepared based on standard police cyber cell / consumer commission notice guidelines. You can edit it directly in the box below before copying or downloading.
+      </p>
+
+      <textarea id="complaintDraftText" class="draft-editor-box" rows="14"></textarea>
+
+      <div class="draft-actions-bar">
+        <button class="btn-gold" onclick="copyDraft()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          <span>Copy Complaint Draft</span>
+        </button>
+        <button class="btn-secondary" onclick="downloadDraft()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <span>Download .txt</span>
+        </button>
+        <button class="btn-secondary" onclick="printDraft()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+            <rect x="6" y="14" width="12" height="8"></rect>
+          </svg>
+          <span>Print / PDF</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- 7. When Professional Help is Needed -->
+    <section class="card-block">
+      <h3>
+        <span style="font-size: 1.4rem;">⚖️</span>
+        <span>7. When Professional Legal Help is Needed</span>
+      </h3>
+      <p style="font-size: 0.95rem; color: #cbd5e1; line-height: 1.6;">
+        {{ result.when_professional_help_needed }}
+      </p>
+    </section>
+
+    <!-- 8. Safety Disclaimer -->
+    <div class="disclaimer-alert">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+        <line x1="12" y1="9" x2="12" y2="13"/>
+        <line x1="12" y1="17" x2="12.01" y2="17"/>
+      </svg>
+      <div class="disclaimer-text">
+        <strong>Important Safety & Legal Notice:</strong><br>
+        {{ result.disclaimer }}
+      </div>
+    </div>
+
+    <!-- Feedback Section -->
+    <div class="feedback-box" id="feedbackArea">
+      <h4 style="font-size: 1rem; margin-bottom: 0.25rem;">Was this legal explanation helpful?</h4>
+      <p style="font-size: 0.8rem; color: var(--text-muted);">Rate this guidance to help improve NyayaMitra AI for Indian citizens</p>
+      <div class="star-rating">
+        <span class="star" onclick="submitRating(1, {{ result.query_id or 1 }})">★</span>
+        <span class="star" onclick="submitRating(2, {{ result.query_id or 1 }})">★</span>
+        <span class="star" onclick="submitRating(3, {{ result.query_id or 1 }})">★</span>
+        <span class="star" onclick="submitRating(4, {{ result.query_id or 1 }})">★</span>
+        <span class="star" onclick="submitRating(5, {{ result.query_id or 1 }})">★</span>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Modal for customizing complaint draft details -->
+  <div id="draftModal" class="modal-overlay">
+    <div class="modal-content">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+        <h3 style="font-size: 1.25rem; font-weight: 700;">Customize Your Complaint Draft</h3>
+        <button type="button" onclick="closeDraftModal()" style="background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer;">&times;</button>
+      </div>
+
+      <div class="form-grid-row">
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input type="text" id="modalUserName" class="form-input" value="{{ result.user_name or '' }}" placeholder="e.g. Ramesh Kumar">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone Number</label>
+          <input type="text" id="modalUserPhone" class="form-input" placeholder="e.g. 9876543210">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Residential Address</label>
+        <input type="text" id="modalUserAddress" class="form-input" placeholder="e.g. Flat 402, Shanti Vihar, New Delhi - 110001">
+      </div>
+
+      <div class="form-grid-row">
+        <div class="form-group">
+          <label class="form-label">Disputed Amount (₹)</label>
+          <input type="text" id="modalAmount" class="form-input" placeholder="e.g. 5,000">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Date of Incident</label>
+          <input type="date" id="modalDate" class="form-input">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Brief Specific Summary</label>
+        <textarea id="modalDesc" class="form-textarea" style="min-height: 80px;" placeholder="e.g. Clicked link sent on WhatsApp claiming electricity bill overdue..."></textarea>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1rem;">
+        <button type="button" class="btn-secondary" onclick="closeDraftModal()">Cancel</button>
+        <button type="button" class="btn-primary" style="width: auto;" onclick="generateDraftAjax('{{ result.category_id }}', '{{ result.language }}')">
+          Update Draft Template
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <strong>NyayaMitra AI</strong> — Simple, Safe & Accessible Legal Information
+      </div>
+      <div>
+        Query Ref #{{ result.query_id or '0' }} • Verified Under India Code (July 16, 2026)
+      </div>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+  <script>
+    // Initial fetch of template text for category
+    document.addEventListener("DOMContentLoaded", () => {
+      fetch("/generate-draft", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          category: "{{ result.category_id or 'cyber_fraud' }}",
+          language: "{{ result.language or 'English' }}",
+          user_name: "{{ result.user_name or '' }}"
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.draft) {
+          const draftBox = document.getElementById("complaintDraftText");
+          if (draftBox) draftBox.value = data.draft;
+        }
+      })
+      .catch(err => console.error("Could not load default draft:", err));
+    });
+  </script>
+</body>
+</html>

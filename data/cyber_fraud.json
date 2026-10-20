@@ -1,0 +1,127 @@
+{
+  "category": "cyber_fraud",
+  "title": {
+    "en": "Cyber & Financial Fraud",
+    "hi": "साइबर और वित्तीय धोखाधड़ी"
+  },
+  "keywords": [
+    "upi fraud",
+    "otp scam",
+    "bank fraud",
+    "fake link",
+    "money deducted",
+    "phishing",
+    "unauthorized transaction",
+    "qr code",
+    "kyc scam",
+    "lottery scam",
+    "credit card fraud",
+    "debit card",
+    "sim swap",
+    "impersonation",
+    "investment scam",
+    "part time job scam",
+    "threat online",
+    "cyber blackmail",
+    "पैसे कट गए",
+    "साइबर फ्रॉड",
+    "ओटीपी",
+    "यूपीआई धोखा",
+    "नकली लिंक"
+  ],
+  "applicable_laws": [
+    "Information Technology Act, 2000 (Section 66C - Identity theft, Section 66D - Cheating by personation using computer resource)",
+    "Bharatiya Nyaya Sanhita, 2023 (Section 318 - Cheating, Section 319 - Cheating by personation, Section 316 - Criminal breach of trust; replacing corresponding sections of erstwhile IPC)"
+  ],
+  "simple_explanation": {
+    "en": "Cyber financial fraud involves unauthorized, fraudulent, or deceptive access to your banking or digital payment systems to siphon off money using digital mechanisms such as fake UPI links, OTP theft, spoofed calls, or phishing.",
+    "hi": "साइबर वित्तीय धोखाधड़ी में धोखेबाज नकली यूपीआई लिंक, ओटीपी चोरी, नकली कॉल या फिशिंग के जरिए डिजिटल माध्यमों का उपयोग करके आपके बैंक खाते या वॉलेट से अनधिकृत रूप से पैसे निकाल लेते हैं।"
+  },
+  "immediate_actions": {
+    "en": [
+      "Contact your bank or card issuer immediately to block your debit/credit card, UPI, and freeze the beneficiary account to prevent further fund transfer.",
+      "Dial national cyber fraud emergency helpline 1930 immediately (crucial within the 'Golden Hour' for transaction freeze).",
+      "File a formal complaint on the National Cyber Crime Reporting Portal (cybercrime.gov.in) under the 'Financial Fraud' section.",
+      "Take screenshots of payment debits, SMS alerts, scammer's chat messages, phone numbers, and save the 12-digit UTR/Transaction Reference ID.",
+      "Report and block the fraudulent mobile number on Chakshu portal (sancharsaathi.gov.in) and WhatsApp."
+    ],
+    "hi": [
+      "तुरंत अपने बैंक या कार्ड जारीकर्ता से संपर्क करें और अपना कार्ड, नेट बैंकिंग या यूपीआई ब्लॉक करवाएं ताकि और पैसे न कट सकें।",
+      "घटना के तुरंत बाद राष्ट्रीय साइबर हेल्पलाइन 1930 पर कॉल करें ('गोल्डन ऑवर' में कॉल करने से फ्रॉड का पैसा रुकने की संभावना सबसे ज्यादा होती है)।",
+      "राष्ट्रीय साइबर अपराध रिपोर्टिंग पोर्टल (cybercrime.gov.in) पर 'वित्तीय धोखाधड़ी' के तहत शिकायत दर्ज करें।",
+      "बैंक ट्रांजैक्शन मैसेज, 12 अंकों का UTR/ट्रांजैक्शन आईडी, चैट स्क्रीनशॉट और धोखेबाज का नंबर सुरक्षित रखें।",
+      "संचार साथी के चक्षु पोर्टल (sancharsaathi.gov.in) पर संदिग्ध नंबर की रिपोर्ट करें।"
+    ]
+  },
+  "evidence_checklist": {
+    "en": [
+      "Transaction ID / 12-digit UTR number",
+      "Bank statement showing the unauthorized debit",
+      "Screenshot of the payment receipt or debit SMS",
+      "Screenshot of fake link, website URL, or APK file if downloaded",
+      "Chat history (WhatsApp/Telegram/SMS) with the fraudster",
+      "Fraudulent mobile number, email ID, or UPI handle/VPA",
+      "Date, exact timestamp, and amount deducted",
+      "Copy of grievance email sent to the bank"
+    ],
+    "hi": [
+      "ट्रांजैक्शन आईडी / 12-अंकों का UTR नंबर",
+      "बैंक खाता विवरण (Bank Statement) जिसमें पैसे कटने की एंट्री हो",
+      "पैसे कटने का मैसेज या रसीद का स्क्रीनशॉट",
+      "फर्जी लिंक, वेबसाइट यूआरएल या डाउनलोड किए गए ऐप का स्क्रीनशॉट",
+      "धोखेबाज के साथ हुई चैट (व्हाट्सएप/एसएमएस/टेलीग्राम)",
+      "धोखेबाज का मोबाइल नंबर, ईमेल आईडी या यूपीआई आईडी (VPA)",
+      "घटना की सटीक तारीख, समय और कटी हुई राशि",
+      "बैंक को भेजी गई शिकायत की कॉपी"
+    ]
+  },
+  "official_resources": [
+    {
+      "name": "National Cyber Crime Reporting Portal",
+      "name_hi": "राष्ट्रीय साइबर अपराध रिपोर्टिंग पोर्टल",
+      "authority": "Ministry of Home Affairs, Govt. of India (I4C)",
+      "helpline": "1930 (Toll Free, 24x7)",
+      "url": "https://cybercrime.gov.in",
+      "description": "Official national portal for reporting cyber financial fraud and cyber crimes across India."
+    },
+    {
+      "name": "Sachet Portal (RBI)",
+      "name_hi": "सचेत पोर्टल (भारतीय रिजर्व बैंक)",
+      "authority": "Reserve Bank of India",
+      "helpline": "14440",
+      "url": "https://sachet.rbi.org.in",
+      "description": "Reserve Bank of India portal for reporting illegal deposits, unauthorized financial entities, and digital lending scams."
+    },
+    {
+      "name": "Sanchar Saathi (Chakshu)",
+      "name_hi": "संचार साथी (चक्षु पोर्टल)",
+      "authority": "Department of Telecommunications",
+      "helpline": "1963",
+      "url": "https://sancharsaathi.gov.in",
+      "description": "Report suspected fraudulent communication received via Call, SMS or WhatsApp."
+    },
+    {
+      "name": "NALSA (National Legal Services Authority)",
+      "name_hi": "नालसा (राष्ट्रीय विधिक सेवा प्राधिकरण)",
+      "authority": "Statutory body under Legal Services Authorities Act, 1987",
+      "helpline": "15100",
+      "url": "https://nalsa.gov.in",
+      "description": "Provides free and competent legal services to eligible citizens and marginalized sections."
+    },
+    {
+      "name": "Tele-Law",
+      "name_hi": "टेली-लॉ सेवा",
+      "authority": "Department of Justice, Ministry of Law and Justice",
+      "helpline": "14488",
+      "url": "https://www.tele-law.in",
+      "description": "Connects citizens with panel lawyers for pre-litigation advice via video-conferencing and telephone at CSCs."
+    }
+  ],
+  "complaint_template": {
+    "police_cyber_cell": {
+      "en": "To,\nThe Station House Officer / Cyber Crime Cell,\n[Police Station Name / District Cyber Police Station],\n[City, State, Pincode]\n\nSubject: Formal Complaint regarding Cyber Financial Fraud amounting to ₹[AMOUNT]\n\nRespected Sir/Madam,\n\nI am writing to register an urgent complaint regarding an incident of cyber financial fraud committed against me on [DATE] at approximately [TIME].\n\nIncident Summary:\nI was deceived into [BRIEF_DESCRIPTION, e.g. clicking a deceptive link / sharing an OTP under false pretenses / sending funds via UPI]. As a direct result, an unauthorized sum of ₹[AMOUNT] was debited from my bank account [BANK_NAME, A/C No. ending in XXXX] and credited to beneficiary account/UPI ID: [BENEFICIARY_DETAILS_IF_KNOWN].\n\nImmediate Steps Taken:\n1. Reported the fraud to National Cyber Helpline 1930 (Acknowledgment No: [ACK_NO_IF_ANY]).\n2. Contacted the home bank customer support to block the card/channel and request a chargeback/lien on [DATE].\n\nEvidence Enclosed:\n1. Certified Bank Account Statement showing unauthorized debit\n2. Transaction reference details (UTR No: [UTR_NUMBER])\n3. Screenshots of text messages, WhatsApp chats, and fraudulent links\n4. Suspect contact details (Phone: [SUSPECT_PHONE], UPI: [SUSPECT_UPI])\n\nLegal Provisions:\nThis fraudulent act falls under Section 66C and 66D of the Information Technology Act, 2000, and Section 318 / 319 of the Bharatiya Nyaya Sanhita (BNS), 2023.\n\nPrayer:\nI earnestly request you to register a First Information Report (FIR) / Cyber Crime Complaint, initiate an investigation to freeze the suspect's beneficiary account, and help recover my hard-earned funds.\n\nYours faithfully,\n\nName: [USER_NAME]\nFather's / Mother's / Spouse's Name: [GUARDIAN_NAME]\nAddress: [USER_ADDRESS]\nMobile Number: [USER_PHONE]\nEmail Address: [USER_EMAIL]\nDate: [CURRENT_DATE]\nPlace: [USER_CITY]\nSignature: _______________________",
+      "hi": "सेवा में,\nथाना प्रभारी / साइबर अपराध प्रकोष्ठ,\n[थाने का नाम / जिला साइबर थाना],\n[शहर, राज्य, पिनकोड]\n\nविषय: ₹[AMOUNT] की साइबर वित्तीय धोखाधड़ी के संबंध में शिकायत पत्र\n\nमहोदय/महोदया,\n\nसविनय निवेदन है कि मैं प्रार्थी [USER_NAME], निवासी [USER_ADDRESS], साइबर वित्तीय धोखाधड़ी की इस घटना की रिपोर्ट दर्ज कराने हेतु यह आवेदन प्रस्तुत कर रहा/रही हूँ। घटना [DATE] को समय लगभग [TIME] बजे घटी।\n\nघटना का संक्षिप्त विवरण:\nमुझे [BRIEF_DESCRIPTION, जैसे: फर्जी लिंक पर क्लिक करवाकर / लॉटरी या नौकरी का झांसा देकर / बैंक अधिकारी बनकर कॉल करके] भ्रमित किया गया, जिसके परिणामस्वरूप मेरे बैंक [BANK_NAME] के खाते से कुल ₹[AMOUNT] की राशि अनाधिकृत रूप से काट ली गई तथा संदिग्ध व्यक्ति/खाते [BENEFICIARY_DETAILS_IF_KNOWN] में स्थानांतरित कर दी गई।\n\nप्रार्थी द्वारा तुरंत की गई कार्रवाई:\n1. राष्ट्रीय साइबर अपराध हेल्पलाइन 1930 पर तुरंत कॉल कर शिकायत दर्ज कराई गई (शिकायत संख्या: [ACK_NO_IF_ANY])।\n2. संबंधित बैंक को तुरंत सूचित कर खाता/कार्ड ब्लॉक कराया गया तथा लेन-देन रोकने का अनुरोध किया गया।\n\nसंलग्न साक्ष्य:\n1. बैंक स्टेटमेंट की सत्यापित प्रति (अनाधिकृत कटौती प्रदर्शित)\n2. लेन-देन संदर्भ संख्या (UTR No: [UTR_NUMBER])\n3. धोखेबाज के साथ चैट, मैसेज एवं फर्जी लिंक के स्क्रीनशॉट\n4. संदिग्ध का फोन नंबर: [SUSPECT_PHONE] एवं यूपीआई आईडी: [SUSPECT_UPI]\n\nकानूनी प्रावधान:\nयह कृत्य सूचना प्रौद्योगिकी अधिनियम, 2000 की धारा 66C व 66D तथा भारतीय न्याय संहिता (BNS), 2023 की धारा 318 व 319 के अंतर्गत दंडनीय अपराध है।\n\nप्रार्थना:\nअतः आपसे करबद्ध प्रार्थना है कि उक्त मामले में त्वरित प्राथमिकी (FIR) दर्ज कर उचित कानूनी कार्रवाई करें, संदिग्ध खाता फ्रीज कराएं तथा मेरी मेहनत की कमाई वापस दिलाने की कृपा करें।\n\nभवदीय/भवदीया,\n\nनाम: [USER_NAME]\nपिता/पति का नाम: [GUARDIAN_NAME]\nपता: [USER_ADDRESS]\nमोबाइल नंबर: [USER_PHONE]\nईमेल: [USER_EMAIL]\nदिनांक: [CURRENT_DATE]\nस्थान: [USER_CITY]\nहस्ताक्षर: _______________________"
+    }
+  },
+  "verified_date": "2026-07-16"
+}

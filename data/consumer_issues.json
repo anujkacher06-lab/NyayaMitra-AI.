@@ -1,0 +1,124 @@
+{
+  "category": "consumer_complaint",
+  "title": {
+    "en": "Consumer Complaints & Disputes",
+    "hi": "उपभोक्ता शिकायत और विवाद"
+  },
+  "keywords": [
+    "defective product",
+    "damaged item",
+    "no refund",
+    "shopping website",
+    "ecommerce fraud",
+    "warranty refused",
+    "service deficiency",
+    "flight cancellation refund",
+    "overcharged",
+    "fake product",
+    "expired product",
+    "seller refusing replacement",
+    "false advertisement",
+    "unfair contract",
+    "खराब सामान",
+    "रिफंड नहीं मिला",
+    "उपभोक्ता शिकायत",
+    "दुकानदार",
+    "वारंटी"
+  ],
+  "applicable_laws": [
+    "Consumer Protection Act, 2019 (Section 2(7) - Consumer rights, Section 2(47) - Unfair Trade Practice, Section 82 - Product Liability)",
+    "Consumer Protection (E-Commerce) Rules, 2020",
+    "Central Consumer Protection Authority (CCPA) Guidelines"
+  ],
+  "simple_explanation": {
+    "en": "Consumer law protects purchasers of goods and services against substandard products, deficient services, overcharging, refused refunds, or deceptive sales practices by sellers, manufacturers, and online platforms.",
+    "hi": "उपभोक्ता संरक्षण कानून किसी भी सामान या सेवा के खरीदार को खराब उत्पाद, घटिया सेवा, रिफंड न मिलना, वारंटी से इनकार या ऑनलाइन ई-कॉमर्स धोखाधड़ी से सुरक्षा व मुआवजा पाने का अधिकार देता है।"
+  },
+  "immediate_actions": {
+    "en": [
+      "Send a clear written grievance or email to the seller/company customer support and their designated Grievance Officer stating your order ID, defect, and demand for replacement or refund within 7-15 days.",
+      "Preserve the tax invoice, packaging photos, courier label, and unboxing videos/photos of the damaged or deficient product.",
+      "Call the National Consumer Helpline (NCH) toll-free at 1915 or register your grievance online at consumerhelpline.gov.in (INGRAM portal).",
+      "Send an SMS to 8800001915 or use the NCH App / UMANG app to track your grievance status.",
+      "If the seller or e-commerce platform fails to resolve the issue within 30 days, prepare to file a statutory case before the District Consumer Disputes Redressal Commission via the online e-Daakhil portal (edaakhil.nic.in)."
+    ],
+    "hi": [
+      "कंपनी या विक्रेता के कस्टमर केयर और नोडल ग्रीवांस ऑफिसर को ऑर्डर आईडी, समस्या और 7 से 15 दिनों में रिफंड/बदलने की मांग के साथ लिखित ईमेल भेजें।",
+      "टैक्स इनवॉइस (बिल), डिलीवरी बॉक्स, कूरियर स्लिप तथा खराब सामान की अनबॉक्सिंग फोटो व वीडियो सुरक्षित रखें।",
+      "राष्ट्रीय उपभोक्ता हेल्पलाइन (NCH) के टोल-फ्री नंबर 1915 पर कॉल करें या consumerhelpline.gov.in (इंग्राम पोर्टल) पर ऑनलाइन शिकायत दर्ज करें।",
+      "8800001915 पर एसएमएस भेजकर या NCH / UMANG ऐप के माध्यम से शिकायत दर्ज करें।",
+      "यदि 30 दिनों में समाधान नहीं मिलता, तो ई-दाखिल पोर्टल (edaakhil.nic.in) के माध्यम से जिला उपभोक्ता आयोग में वाद दायर करें।"
+    ]
+  },
+  "evidence_checklist": {
+    "en": [
+      "Original tax invoice / purchase receipt showing GST and seller details",
+      "Order confirmation email or SMS with Order ID",
+      "High-resolution photographs or video showing the product defect / damage",
+      "Courier delivery slip, unboxing video, and packaging box label",
+      "Warranty card or guarantee certificate",
+      "Complete email thread and chat history with customer support",
+      "Written refusal or unanswered refund requests",
+      "Bank statement / UPI transaction proof of payment"
+    ],
+    "hi": [
+      "मूल टैक्स इनवॉइस (खरीद रसीद) जिसमें जीएसटी और विक्रेता का विवरण हो",
+      "ऑर्डर पुष्टिकरण ईमेल या एसएमएस (ऑर्डर आईडी सहित)",
+      "खराब या टूटे हुए उत्पाद की स्पष्ट तस्वीरें या वीडियो",
+      "कूरियर डिलीवरी स्लिप और पार्सल बॉक्स का लेबल (अनबॉक्सिंग वीडियो यदि उपलब्ध हो)",
+      "वारंटी कार्ड या गारंटी प्रमाण पत्र",
+      "कस्टमर केयर के साथ बातचीत का पूरा ईमेल और चैट रिकॉर्ड",
+      "रिफंड अस्वीकार करने का संदेश या समाधान न होने का प्रमाण",
+      "भुगतान का बैंक स्टेटमेंट या यूपीआई रसीद"
+    ]
+  },
+  "official_resources": [
+    {
+      "name": "National Consumer Helpline (NCH - INGRAM)",
+      "name_hi": "राष्ट्रीय उपभोक्ता हेल्पलाइन",
+      "authority": "Department of Consumer Affairs, Govt. of India",
+      "helpline": "1915 (Toll Free, 8 AM - 8 PM) / SMS to 8800001915",
+      "url": "https://consumerhelpline.gov.in",
+      "description": "Centralized portal and pre-litigation grievance redressal platform connecting consumers directly with registered companies."
+    },
+    {
+      "name": "e-Daakhil Portal",
+      "name_hi": "ई-दाखिल पोर्टल",
+      "authority": "National Consumer Disputes Redressal Commission (NCDRC)",
+      "helpline": "011-24300699",
+      "url": "https://edaakhil.nic.in",
+      "description": "Digital portal for filing consumer complaints online before District, State, and National Consumer Commissions without physical court visits."
+    },
+    {
+      "name": "Central Consumer Protection Authority (CCPA)",
+      "name_hi": "केंद्रीय उपभोक्ता संरक्षण प्राधिकरण",
+      "authority": "Ministry of Consumer Affairs, Food and Public Distribution",
+      "helpline": "1915",
+      "url": "https://consumeraffairs.nic.in",
+      "description": "Regulatory authority safeguarding consumer rights against unfair trade practices and false or misleading advertisements."
+    },
+    {
+      "name": "India Code (Consumer Protection Act, 2019)",
+      "name_hi": "इंडिया कोड (उपभोक्ता संरक्षण अधिनियम)",
+      "authority": "Legislative Department, Ministry of Law and Justice",
+      "helpline": "N/A",
+      "url": "https://www.indiacode.nic.in/handle/123456789/15256",
+      "description": "Official repository for verified central legislation, rules, and statutory notifications."
+    },
+    {
+      "name": "NALSA Legal Aid for Consumers",
+      "name_hi": "नालसा विधिक सहायता",
+      "authority": "National Legal Services Authority",
+      "helpline": "15100",
+      "url": "https://nalsa.gov.in",
+      "description": "Free legal representation and legal aid clinics for eligible consumers pursuing grievances."
+    }
+  ],
+  "complaint_template": {
+    "consumer_notice": {
+      "en": "LEGAL NOTICE / FORMAL GRIEVANCE NOTICE\n\nDate: [CURRENT_DATE]\n\nTo,\nThe Grievance Officer / Managing Director,\n[COMPANY_OR_SELLER_NAME],\nRegistered Address: [COMPANY_ADDRESS]\nCustomer Care Email: [COMPANY_EMAIL]\n\nSubject: Formal Notice regarding Deficiency in Service / Defective Product (Order No: [ORDER_NUMBER]) under Consumer Protection Act, 2019\n\nDear Sir/Madam,\n\n1. I, [USER_NAME], resident of [USER_ADDRESS], purchased [PRODUCT_OR_SERVICE_NAME] from your platform/store on [PURCHASE_DATE] against Tax Invoice No: [INVOICE_NUMBER] for a total consideration of ₹[AMOUNT].\n\n2. Grievance Summary:\nUpon delivery / receipt on [DELIVERY_DATE], I discovered that [BRIEF_DESCRIPTION_OF_DEFECT, e.g. the product was non-functional / severely damaged / not as advertised / service was completely deficient].\n\n3. Pre-notice Actions:\nI promptly brought this defect to the attention of your customer support team via [TICKET_OR_EMAIL_DETAILS] on [DATE]. However, your team has either arbitrarily rejected my legitimate request for replacement/refund or failed to redress the issue within a reasonable timeframe.\n\n4. Breach of Statutory Duties:\nThe aforementioned conduct constitutes 'Deficiency in Service' under Section 2(11) and an 'Unfair Trade Practice' under Section 2(47) of the Consumer Protection Act, 2019, causing me severe mental distress, inconvenience, and financial loss.\n\n5. Demand / Requisition:\nI hereby formally demand that within 15 (fifteen) days of receipt of this notice, you:\n  a) Issue a full refund of ₹[AMOUNT] to my originating payment account, OR\n  b) Provide a brand-new replacement in working condition at no additional shipping cost.\n\nFailing which, I shall be constrained to initiate formal proceedings before the District Consumer Disputes Redressal Commission via e-Daakhil, seeking full refund along with statutory interest at 18% p.a., exemplary damages for mental harassment, and legal costs.\n\nYours sincerely,\n\n[USER_NAME]\nContact No: [USER_PHONE]\nEmail: [USER_EMAIL]\nAddress: [USER_ADDRESS]",
+      "hi": "औपचारिक कानूनी नोटिस / उपभोक्ता शिकायत सूचना\n\nदिनांक: [CURRENT_DATE]\n\nसेवा में,\nग्रीवांस ऑफिसर / प्रबंध निदेशक,\n[COMPANY_OR_SELLER_NAME],\nपंजीकृत पता: [COMPANY_ADDRESS]\nईमेल: [COMPANY_EMAIL]\n\nविषय: उपभोक्ता संरक्षण अधिनियम, 2019 के अंतर्गत दोषपूर्ण उत्पाद / सेवा में कमी (ऑर्डर संख्या: [ORDER_NUMBER]) हेतु अंतिम नोटिस\n\nमहोदय/महोदया,\n\n1. मैं प्रार्थी [USER_NAME], निवासी [USER_ADDRESS], ने आपकी दुकान/ऑनलाइन प्लेटफॉर्म से दिनांक [PURCHASE_DATE] को बिल संख्या [INVOICE_NUMBER] के तहत कुल ₹[AMOUNT] का भुगतान कर [PRODUCT_OR_SERVICE_NAME] खरीदा था।\n\n2. शिकायत का संक्षिप्त विवरण:\nदिनांक [DELIVERY_DATE] को उत्पाद प्राप्त होने पर ज्ञात हुआ कि [BRIEF_DESCRIPTION_OF_DEFECT, जैसे: उत्पाद क्षतिग्रस्त है / काम नहीं कर रहा है / विज्ञापन के अनुसार नहीं है]।\n\n3. पूर्व में की गई शिकायत:\nमैंने दिनांक [DATE] को आपके ग्राहक सेवा विभाग से संपर्क कर शिकायत दर्ज कराई थी (शिकायत संख्या: [TICKET_OR_EMAIL_DETAILS]), परंतु आपकी कंपनी द्वारा उचित समाधान या रिफंड देने से अनुचित रूप से इनकार कर दिया गया।\n\n4. कानूनी उल्लंघन:\nआपका यह आचरण उपभोक्ता संरक्षण अधिनियम, 2019 की धारा 2(11) (सेवा में कमी) तथा धारा 2(47) (अनुचित व्यापार व्यवहार) का स्पष्ट उल्लंघन है, जिससे मुझे भारी मानसिक प्रताड़ना व आर्थिक नुकसान हुआ है।\n\n5. मांग:\nअतः इस नोटिस के माध्यम से आपको सूचित किया जाता है कि इस नोटिस की प्राप्ति के 15 दिनों के भीतर:\n  क) मेरे खाते में ₹[AMOUNT] की पूर्ण राशि का रिफंड करें, अथवा\n  ख) बिना किसी अतिरिक्त शुल्क के नया एवं सही उत्पाद उपलब्ध कराएं।\n\nयदि निर्धारित अवधि में समाधान नहीं किया गया, तो मैं ई-दाखिल पोर्टल के माध्यम से जिला उपभोक्ता विवाद निवारण आयोग के समक्ष वाद दायर करने के लिए बाध्य होऊँगा/होऊँगी, जिसमें पूर्ण राशि, 18% वार्षिक ब्याज, मानसिक क्षतिपूर्ति और मुकदमे का खर्च आपकी कंपनी से वसूला जाएगा।\n\nभवदीय/भवदीया,\n\n[USER_NAME]\nमोबाइल नंबर: [USER_PHONE]\nईमेल: [USER_EMAIL]\nपता: [USER_ADDRESS]"
+    }
+  },
+  "verified_date": "2026-07-16"
+}
