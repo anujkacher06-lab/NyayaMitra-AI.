@@ -219,3 +219,95 @@ Please structure the final response tailored to the user's situation using ONLY 
 
     # Safe deterministic fallback
     return generate_fallback_response(category, question, verified_ctx, language)
+
+def generate_follow_up_answer(category: str, original_question: str, follow_up_question: str, verified_ctx: dict, language: str = "English") -> str:
+    """
+    Answers conversational follow-up questions from citizens grounded in verified laws.
+    """
+    is_hi = language.lower().startswith("hi")
+    gemini_key = os.getenv("GEMINI_API_KEY") or os.getenv("AI_API_KEY")
+    openai_key = os.getenv("OPENAI_API_KEY")
+
+    system_prompt = (
+        "You are NyayaMitra AI, an Indian legal information assistant. "
+        "Answer the citizen's follow-up question concisely (max 3-4 bullet points), grounded in Indian law (BNS 2023, BNSS 2023, CPA 2019, RTI 2005). "
+        "Never invent laws or citation numbers. Always advise consulting DLSA/NALSA (15100) or Tele-Law (14488) for professional counsel."
+        if not is_hi else
+        "आप न्यायमित्र (NyayaMitra AI) हैं। नागरिक के अनुवर्ती (follow-up) प्रश्न का संक्षिप्त और स्पष्ट उत्तर 3-4 बिंदुओं में दें। "
+        "उत्तर भारतीय कानून (BNS 2023, BNSS 2023, CPA 2019, RTI 2005) पर आधारित होना चाहिए। "
+        "नालसा (15100) या टेली-लॉ (14488) से विधिक परामर्श लेने का सुझाव दें।"
+    )
+
+    user_prompt = f"""Case Category: {category}
+Original Citizen Problem: {original_question}
+Follow-up Question: {follow_up_question}
+Verified Statutes: {json.dumps(verified_ctx.get('applicable_laws', []), ensure_ascii=False)}
+Language: {'Hindi' if is_hi else 'English'}
+"""
+
+    if gemini_key:
+        try:
+            ans = query_gemini_api(gemini_key, system_prompt, user_prompt)
+            if ans and len(ans.strip()) > 10:
+                return ans.strip()
+        except Exception:
+            pass
+
+    if openai_key:
+        try:
+            ans = query_openai_api(openai_key, system_prompt, user_prompt)
+            if ans and len(ans.strip()) > 10:
+                return ans.strip()
+        except Exception:
+            pass
+
+    # Intelligent deterministic offline fallback for common citizen follow-ups
+    q_lower = follow_up_question.lower()
+    if any(k in q_lower for k in ["police", "refuse", "fir", "मना", "थाना", "पुलिस"]):
+        if is_hi:
+            return (
+                "यदि पुलिस थाना आपकी प्राथमिकी (FIR) दर्ज करने से मना करता है:\n"
+                "1. भारतीय नागरिक सुरक्षा संहिता (BNSS), 2023 की धारा 173(4) के तहत आप अपनी लिखित शिकायत पंजीकृत डाक (Speed Post) द्वारा सीधे जिले के पुलिस अधीक्षक (SP / DCP) को भेज सकते हैं।\n"
+                "2. आप संबंधित राज्य पुलिस के ऑनलाइन नागरिक पोर्टल या राष्ट्रीय साइबर पोर्टल (cybercrime.gov.in) पर ऑनलाइन ई-एफआईआर/शिकायत दर्ज कर सकते हैं।\n"
+                "3. इसके बाद भी कार्रवाई न होने पर, BNSS की धारा 175(3) के अंतर्गत न्यायिक मजिस्ट्रेट की अदालत में अधिवक्ता या नालसा (15100) के मुफ्त वकील के माध्यम से प्रार्थना पत्र दिया जा सकता है।"
+            )
+        else:
+            return (
+                "If the police station refuses to register your FIR / complaint:\n"
+                "1. Under Section 173(4) of the Bharatiya Nagarik Suraksha Sanhita (BNSS), 2023, you can send the substance of the information in writing by registered post to the Superintendent of Police (SP / DCP).\n"
+                "2. You can submit an online complaint directly via your State Police Citizen Portal or the National Cyber Portal (cybercrime.gov.in).\n"
+                "3. If inaction persists, you may approach the Judicial Magistrate under Section 175(3) of BNSS 2023 with assistance from District Legal Services Authority (DLSA / Helpline 15100)."
+            )
+    elif any(k in q_lower for k in ["fee", "cost", "charge", "खर्च", "फीस", "शुल्क"]):
+        if is_hi:
+            return (
+                "कानूनी कार्यवाही व शिकायत हेतु शुल्क संबंधी जानकारी:\n"
+                "1. साइबर हेल्पलाइन 1930 और राष्ट्रीय साइबर पोर्टल (cybercrime.gov.in) पर शिकायत दर्ज करना 100% निःशुल्क है।\n"
+                "2. उपभोक्ता संरक्षण अधिनियम (CPA 2019) के तहत ₹5 लाख तक के दावों के लिए ई-दाखिल पोर्टल पर कोई कोर्ट फीस नहीं लगती।\n"
+                "3. आरटीआई (RTI) आवेदन का वैधानिक शुल्क केवल ₹10 है (बीपीएल कार्ड धारकों के लिए पूर्णतः निःशुल्क)।\n"
+                "4. नालसा (15100) और टेली-लॉ (14488) महिलाओं और पात्र नागरिकों को पूर्णतः निःशुल्क कानूनी सहायता प्रदान करते हैं।"
+            )
+        else:
+            return (
+                "Statutory fee and cost details:\n"
+                "1. Filing on the National Cyber Crime Reporting Portal (1930 / cybercrime.gov.in) is 100% free.\n"
+                "2. Under the Consumer Protection Act, 2019, claims up to ₹5,00,000 before the District Commission carry zero court fee.\n"
+                "3. RTI applications require a nominal statutory fee of only ₹10 (exempt for Below Poverty Line applicants).\n"
+                "4. Free legal aid and panel lawyers are available at zero cost via NALSA (15100) for eligible citizens under Section 12 of the LSA Act."
+            )
+    else:
+        if is_hi:
+            return (
+                f"आपके प्रश्न '{follow_up_question}' के संदर्भ में प्रक्रियात्मक सलाह:\n"
+                "1. अपने पास मौजूद सभी साक्ष्य (बैंक स्टेटमेंट, रसीदें, स्क्रीनशॉट, लिखित नोटिस) की 2-2 प्रमाणित प्रतियां तैयार रखें।\n"
+                "2. संबंधित आधिकारिक पोर्टल या हेल्पलाइन पर अपनी शिकायत संदर्भ संख्या (Grievance Ref No.) दर्ज कराकर पावती सुरक्षित रखें।\n"
+                "3. किसी भी प्रकार के संशय अथवा जटिल कानूनी स्थिति में नालसा हेल्पलाइन 15100 या टेली-लॉ (14488) पर निःशुल्क विधिक परामर्श प्राप्त करें।"
+            )
+        else:
+            return (
+                f"Procedural guidance for '{follow_up_question}':\n"
+                "1. Keep duplicate certified copies of all primary evidence (bank transactions, receipts, chat records, notices).\n"
+                "2. Quote your formal acknowledgment reference number in all subsequent correspondence with authorities.\n"
+                "3. For tailored procedural assistance, contact the National Legal Services Authority (Helpline: 15100) or Tele-Law (14488)."
+            )
+

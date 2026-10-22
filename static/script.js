@@ -14,6 +14,10 @@ const i18n = {
     catConsumerDesc: "Defective goods, denied refunds, fake products, and e-commerce service deficiencies.",
     catWorkplaceTitle: "Workplace & Salary Issues",
     catWorkplaceDesc: "Unpaid wages, delayed salaries, withheld PF/gratuity, and wrongful termination.",
+    catTenancyTitle: "Tenancy & Rent Disputes",
+    catTenancyDesc: "Withheld security deposits, illegal eviction notice, arbitrary rent hike & basic utility cuts.",
+    catRtiTitle: "RTI (Right to Information)",
+    catRtiDesc: "Seeking government records, pending pension/scholarship status, and public project audit.",
     formHeading: "Describe Your Legal Problem",
     labelCategory: "Legal Category",
     labelName: "Your Full Name",
@@ -25,10 +29,14 @@ const i18n = {
     sampleCyber: "₹5,000 deducted after clicking fake UPI link",
     sampleConsumer: "Flipkart refused refund for damaged phone delivery",
     sampleSalary: "Employer has not paid last 2 months salary & F&F",
+    sampleTenancy: "Landlord refusing ₹40,000 deposit refund after vacating",
+    sampleRti: "File RTI for pending scholarship status & delay reason",
     btnAnalyze: "Analyze & Get Legal Guidance",
     btnAnalyzing: "Analyzing Verified Laws & Portals...",
+    btnVoiceInput: "Voice Input (बोलकर लिखें)",
+    btnListening: "Listening... (सुन रहे हैं)",
     draftHeading: "Generate Official Complaint Draft",
-    btnCopy: "Copy Complaint Draft",
+    btnCopy: "Copy Draft",
     btnCopied: "Copied to Clipboard!",
     btnDownload: "Download Draft (.txt)",
     btnPrint: "Print / Save PDF",
@@ -47,6 +55,10 @@ const i18n = {
     catConsumerDesc: "खराब सामान, रिफंड न मिलना, ई-कॉमर्स धोखाधड़ी, वारंटी से इनकार।",
     catWorkplaceTitle: "कार्यस्थल व वेतन संबंधी समस्याएं",
     catWorkplaceDesc: "रुकी हुई सैलरी, वेतन में अनुचित कटौती, पीएफ/ग्रेच्युटी रोकना, अवैध सेवा समाप्ति।",
+    catTenancyTitle: "किरायेदारी व मकान मालिक विवाद",
+    catTenancyDesc: "सिक्योरिटी डिपॉजिट रोकना, अवैध बेदखली नोटिस, मनमाना किराया व सुविधाएं काटना।",
+    catRtiTitle: "सूचना का अधिकार (RTI)",
+    catRtiDesc: "सरकारी फाइलों की प्रति, छात्रवृत्ति/पेंशन देरी, और योजनाओं के ऑडिट की सूचना।",
     formHeading: "अपनी समस्या का विवरण दर्ज करें",
     labelCategory: "समस्या की श्रेणी",
     labelName: "आपका पूरा नाम",
@@ -58,8 +70,12 @@ const i18n = {
     sampleCyber: "फर्जी यूपीआई लिंक पर क्लिक करने से ₹5,000 कट गए",
     sampleConsumer: "फ्लिपकार्ट से टूटा हुआ फोन मिला, रिफंड देने से मना कर रहे हैं",
     sampleSalary: "कंपनी ने पिछले 2 महीने की सैलरी और रिलीविंग लेटर रोक रखा है",
+    sampleTenancy: "मकान खाली करने के बाद मकान मालिक ₹40,000 का डिपॉजिट वापस नहीं कर रहा",
+    sampleRti: "छात्रवृत्ति न मिलने का कारण जानने हेतु आरटीआई आवेदन",
     btnAnalyze: "कानूनी जानकारी व मार्गदर्शन प्राप्त करें",
     btnAnalyzing: "सत्यापित कानूनों की जांच हो रही है...",
+    btnVoiceInput: "बोलकर लिखें (Voice Input)",
+    btnListening: "सुन रहे हैं... (Listening)",
     draftHeading: "औपचारिक शिकायत प्रारूप तैयार करें",
     btnCopy: "प्रारूप कॉपी करें",
     btnCopied: "कॉपी कर लिया गया!",
@@ -70,6 +86,8 @@ const i18n = {
 };
 
 let currentLang = "en";
+let speechRecognition = null;
+let isListening = false;
 
 function setLanguage(lang) {
   currentLang = lang;
@@ -147,8 +165,79 @@ function fillSamplePrompt(type) {
     } else {
       problemInput.value = "My employer has failed to disburse my salary for the last 2 consecutive months amounting to ₹90,000. When I tendered my resignation, they also withheld my relieving letter and full and final settlement.";
     }
+  } else if (type === "tenancy") {
+    selectCategory("tenancy_dispute");
+    if (currentLang === "hi") {
+      problemInput.value = "मैंने 1 महीने पहले विधिवत नोटिस देकर फ्लैट खाली कर दिया था। रेंट एग्रीमेंट के अनुसार मकान मालिक को 15 दिनों में ₹40,000 का सिक्योरिटी डिपॉजिट वापस करना था, लेकिन वह फोन नहीं उठा रहे हैं।";
+    } else {
+      problemInput.value = "I vacated my rented apartment after serving proper 30-day written notice. As per the tenancy agreement, the landlord was obligated to refund my refundable security deposit of ₹40,000 within 15 days, but is now withholding it without cause.";
+    }
+  } else if (type === "rti") {
+    selectCategory("rti_assistance");
+    if (currentLang === "hi") {
+      problemInput.value = "मैंने 8 महीने पहले राज्य सरकार की उच्च शिक्षा छात्रवृत्ति योजना के लिए आवेदन किया था। सभी दस्तावेज सत्यापित होने के बाद भी कोई राशि नहीं मिली। मुझे आवेदन की दैनिक प्रगति और देरी के कारणों की आधिकारिक जानकारी चाहिए।";
+    } else {
+      problemInput.value = "I applied for the State Government Higher Education Scholarship 8 months ago. Despite all document approvals, no funds have been disbursed. I require certified daily progress reports and reasons for delay under Section 6(1) of RTI Act.";
+    }
   }
   problemInput.focus();
+}
+
+// Voice Input via Web Speech API
+function toggleVoiceRecognition() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const voiceBtn = document.getElementById("voiceBtn");
+  const voiceText = document.getElementById("voiceText");
+  const problemInput = document.getElementById("problemInput");
+
+  if (!SpeechRecognition) {
+    alert(currentLang === "hi"
+      ? "आपका ब्राउज़र वॉइस इनपुट का समर्थन नहीं करता है। कृपया गूगल क्रोम (Google Chrome) या एज (Microsoft Edge) का उपयोग करें।"
+      : "Speech recognition is not supported in this browser. Please use Google Chrome or Microsoft Edge.");
+    return;
+  }
+
+  if (isListening && speechRecognition) {
+    speechRecognition.stop();
+    return;
+  }
+
+  speechRecognition = new SpeechRecognition();
+  speechRecognition.continuous = false;
+  speechRecognition.interimResults = false;
+  speechRecognition.lang = currentLang === "hi" ? "hi-IN" : "en-IN";
+
+  speechRecognition.onstart = () => {
+    isListening = true;
+    if (voiceBtn) voiceBtn.classList.add("listening");
+    if (voiceText) voiceText.textContent = i18n[currentLang]?.btnListening || "Listening...";
+    showToast(currentLang === "hi" ? "सुन रहे हैं... कृपया अपनी समस्या बोलें" : "Listening... Please describe your issue");
+  };
+
+  speechRecognition.onresult = (event) => {
+    const transcript = event.results[0][0].transcript;
+    if (problemInput) {
+      if (problemInput.value.trim().length > 0) {
+        problemInput.value += " " + transcript;
+      } else {
+        problemInput.value = transcript;
+      }
+    }
+    showToast(currentLang === "hi" ? "आवाज रिकॉर्ड हो गई!" : "Voice transcribed successfully!");
+  };
+
+  speechRecognition.onerror = (event) => {
+    console.error("Speech recognition error:", event.error);
+    showToast(currentLang === "hi" ? "वॉइस इनपुट में त्रुटि हुई।" : "Microphone input error.");
+  };
+
+  speechRecognition.onend = () => {
+    isListening = false;
+    if (voiceBtn) voiceBtn.classList.remove("listening");
+    if (voiceText) voiceText.textContent = i18n[currentLang]?.btnVoiceInput || "Voice Input (बोलकर लिखें)";
+  };
+
+  speechRecognition.start();
 }
 
 // Toast notification
@@ -179,7 +268,6 @@ function copyDraft() {
   navigator.clipboard.writeText(text).then(() => {
     showToast(currentLang === "hi" ? "शिकायत प्रारूप कॉपी हो गया!" : "Draft copied to clipboard!");
   }).catch(() => {
-    // Fallback
     draftArea.select();
     document.execCommand("copy");
     showToast("Copied to clipboard!");
@@ -198,26 +286,33 @@ function downloadDraft() {
   a.click();
 }
 
-// Print draft
-function printDraft() {
+// Print / Export Formal Petition (PDF)
+function printFormalPetition() {
   const draftArea = document.getElementById("complaintDraftText");
-  if (!draftArea) return;
-  const text = draftArea.value || draftArea.innerText;
-  const printWindow = window.open("", "_blank");
-  printWindow.document.write(`
-    <html>
-      <head>
-        <title>NyayaMitra Legal Complaint Draft</title>
-        <style>
-          body { font-family: monospace; white-space: pre-wrap; padding: 2rem; line-height: 1.6; font-size: 13pt; }
-        </style>
-      </head>
-      <body>${text}</body>
-    </html>
-  `);
-  printWindow.document.close();
-  printWindow.focus();
-  setTimeout(() => printWindow.print(), 300);
+  const draftText = draftArea ? (draftArea.value || draftArea.innerText) : "";
+  const queryId = window.currentQueryId || "";
+
+  // Open /print-draft with POST to pass exact text cleanly
+  const form = document.createElement("form");
+  form.method = "POST";
+  form.action = "/print-draft";
+  form.target = "_blank";
+
+  const draftInput = document.createElement("input");
+  draftInput.type = "hidden";
+  draftInput.name = "draft_text";
+  draftInput.value = draftText;
+  form.appendChild(draftInput);
+
+  const queryIdInput = document.createElement("input");
+  queryIdInput.type = "hidden";
+  queryIdInput.name = "query_id";
+  queryIdInput.value = queryId;
+  form.appendChild(queryIdInput);
+
+  document.body.appendChild(form);
+  form.submit();
+  form.remove();
 }
 
 // Dynamic Draft Generation via AJAX
@@ -337,3 +432,302 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   updateChecklistProgress();
 });
+
+// Quick Share Handlers
+function shareViaWhatsApp() {
+  const title = document.querySelector(".result-header h2")?.innerText || "NyayaMitra Legal Analysis";
+  const cat = document.querySelector(".category-tag-badge strong")?.innerText || "Legal Guidance";
+  const url = window.location.href;
+  const text = encodeURIComponent(`⚖️ *NyayaMitra AI Legal Guidance*\nCategory: ${cat}\nReview procedural steps, evidence checklist, and emergency helplines at:\n${url}`);
+  window.open(`https://api.whatsapp.com/send?text=${text}`, "_blank");
+}
+
+function shareViaEmail() {
+  const cat = document.querySelector(".category-tag-badge strong")?.innerText || "Legal Guidance";
+  const url = window.location.href;
+  const subject = encodeURIComponent(`NyayaMitra Legal Guidance: ${cat}`);
+  const body = encodeURIComponent(`Citizen Legal Information Report\nCategory: ${cat}\n\nPlease review your action checklist and complaint draft at:\n${url}\n\nEmergency Helplines:\n- Cyber Fraud: 1930\n- Consumer Grievance: 1915\n- NALSA Legal Aid: 15100\n- Tele-Law: 14488`);
+  window.location.href = `mailto:?subject=${subject}&body=${body}`;
+}
+
+// Follow-Up Chat Handlers
+function askFollowUpChip(text) {
+  const input = document.getElementById("followUpInput");
+  if (input) {
+    input.value = text;
+    const form = document.getElementById("followUpForm");
+    if (form) form.dispatchEvent(new Event("submit", { cancelable: true }));
+  }
+}
+
+function submitFollowUp(e) {
+  if (e) e.preventDefault();
+  const input = document.getElementById("followUpInput");
+  const thread = document.getElementById("chatThread");
+  const sendBtn = document.getElementById("sendFollowUpBtn");
+  if (!input || !input.value.trim()) return;
+
+  const userQuestion = input.value.trim();
+  input.value = "";
+
+  // Append user bubble
+  const userBubble = document.createElement("div");
+  userBubble.className = "chat-bubble chat-bubble-user";
+  userBubble.textContent = userQuestion;
+  thread.appendChild(userBubble);
+  thread.scrollTop = thread.scrollHeight;
+
+  // Append thinking bubble
+  const aiBubble = document.createElement("div");
+  aiBubble.className = "chat-bubble chat-bubble-ai";
+  aiBubble.innerHTML = `<em>${currentLang === "hi" ? "कानूनी संदर्भ की जांच की जा रही है..." : "Checking verified statutes..."}</em>`;
+  thread.appendChild(aiBubble);
+  thread.scrollTop = thread.scrollHeight;
+
+  if (sendBtn) sendBtn.disabled = true;
+
+  fetch("/follow-up", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      query_id: window.currentQueryId || null,
+      question: userQuestion
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (sendBtn) sendBtn.disabled = false;
+    if (data.answer) {
+      aiBubble.textContent = data.answer;
+    } else {
+      aiBubble.textContent = "Could not retrieve answer. Please try again or call NALSA 15100.";
+    }
+    thread.scrollTop = thread.scrollHeight;
+  })
+  .catch(err => {
+    if (sendBtn) sendBtn.disabled = false;
+    console.error("Follow-up error:", err);
+    aiBubble.textContent = "Network error. Please try again.";
+  });
+}
+
+// ==========================================================================
+// Text-to-Speech (TTS) Voice Readout Controller
+// ==========================================================================
+let currentSpeechUtterance = null;
+let isSpeaking = false;
+let isPaused = false;
+let speechRate = 1.0;
+
+function getOptimalVoice(langCode) {
+  if (!('speechSynthesis' in window)) return null;
+  const voices = window.speechSynthesis.getVoices();
+  if (langCode === "hi") {
+    return voices.find(v => v.lang.startsWith("hi")) || voices.find(v => v.lang.includes("IN")) || null;
+  }
+  return voices.find(v => v.lang === "en-IN") || voices.find(v => v.lang.startsWith("en")) || null;
+}
+
+function toggleSpeechReadout() {
+  if (!('speechSynthesis' in window)) {
+    alert("Speech Synthesis (Voice Readout) is not supported in your browser.");
+    return;
+  }
+
+  if (isSpeaking && !isPaused) {
+    window.speechSynthesis.pause();
+    isPaused = true;
+    updateTTSUI("paused");
+    return;
+  } else if (isSpeaking && isPaused) {
+    window.speechSynthesis.resume();
+    isPaused = false;
+    updateTTSUI("speaking");
+    return;
+  }
+
+  startSpeechReadout();
+}
+
+function startSpeechReadout() {
+  window.speechSynthesis.cancel();
+
+  const explanationEl = document.querySelector(".card-block p");
+  const actionItems = document.querySelectorAll(".step-item .step-content");
+
+  let textToRead = "";
+  if (explanationEl) {
+    textToRead += "Legal Guidance Summary: " + explanationEl.innerText.trim() + ". ";
+  }
+
+  if (actionItems.length > 0) {
+    textToRead += " Immediate Action Steps: ";
+    actionItems.forEach((act, idx) => {
+      textToRead += `Step ${idx + 1}: ${act.innerText.trim()}. `;
+    });
+  }
+
+  if (!textToRead.trim()) {
+    showToast("No legal guidance text found to read.");
+    return;
+  }
+
+  const isHindi = currentLang === "hi" || /[\u0900-\u097F]/.test(textToRead);
+  const utterance = new SpeechSynthesisUtterance(textToRead);
+  utterance.rate = speechRate;
+  utterance.pitch = 1.0;
+  utterance.lang = isHindi ? "hi-IN" : "en-IN";
+
+  const voice = getOptimalVoice(isHindi ? "hi" : "en");
+  if (voice) utterance.voice = voice;
+
+  utterance.onstart = () => {
+    isSpeaking = true;
+    isPaused = false;
+    updateTTSUI("speaking");
+  };
+
+  utterance.onend = () => {
+    isSpeaking = false;
+    isPaused = false;
+    updateTTSUI("ready");
+  };
+
+  utterance.onerror = (e) => {
+    console.error("Speech error:", e);
+    isSpeaking = false;
+    isPaused = false;
+    updateTTSUI("ready");
+  };
+
+  currentSpeechUtterance = utterance;
+  window.speechSynthesis.speak(utterance);
+}
+
+function stopSpeechReadout() {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+  }
+  isSpeaking = false;
+  isPaused = false;
+  updateTTSUI("ready");
+}
+
+function changeSpeechRate(rate) {
+  speechRate = parseFloat(rate) || 1.0;
+  if (isSpeaking && !isPaused) {
+    startSpeechReadout();
+  }
+}
+
+function updateTTSUI(status) {
+  const bar = document.getElementById("ttsPlayerBar");
+  const statusPill = document.getElementById("ttsStatusPill");
+  const wave = document.getElementById("ttsSoundWave");
+  const btnLabel = document.getElementById("ttsBtnLabel");
+  const stopBtn = document.getElementById("ttsStopBtn");
+  const playSvg = document.getElementById("ttsPlaySvg");
+
+  if (!bar) return;
+
+  if (status === "speaking") {
+    bar.classList.add("playing");
+    if (statusPill) {
+      statusPill.textContent = "Speaking";
+      statusPill.className = "tts-status-pill speaking";
+    }
+    if (wave) wave.style.display = "flex";
+    if (btnLabel) btnLabel.textContent = "Pause";
+    if (stopBtn) stopBtn.style.display = "inline-flex";
+    if (playSvg) playSvg.innerHTML = '<rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect>';
+  } else if (status === "paused") {
+    bar.classList.remove("playing");
+    if (statusPill) {
+      statusPill.textContent = "Paused";
+      statusPill.className = "tts-status-pill";
+    }
+    if (wave) wave.style.display = "none";
+    if (btnLabel) btnLabel.textContent = "Resume";
+    if (stopBtn) stopBtn.style.display = "inline-flex";
+    if (playSvg) playSvg.innerHTML = '<polygon points="5 3 19 12 5 21 5 3"></polygon>';
+  } else {
+    bar.classList.remove("playing");
+    if (statusPill) {
+      statusPill.textContent = "Ready";
+      statusPill.className = "tts-status-pill";
+    }
+    if (wave) wave.style.display = "none";
+    if (btnLabel) btnLabel.textContent = currentLang === "hi" ? "सलाह सुनें" : "Listen Guidance";
+    if (stopBtn) stopBtn.style.display = "none";
+    if (playSvg) playSvg.innerHTML = '<polygon points="5 3 19 12 5 21 5 3"></polygon>';
+  }
+}
+
+if ('speechSynthesis' in window) {
+  window.speechSynthesis.onvoiceschanged = () => {};
+}
+
+// ==========================================================================
+// Interactive State Legal Aid Live Switcher
+// ==========================================================================
+function loadStateAidDropdown(selectElementId, activeStateName = "") {
+  const select = document.getElementById(selectElementId);
+  if (!select) return;
+
+  fetch("/api/all-states")
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === "success" && data.states) {
+        select.innerHTML = '<option value="">-- Choose State / UT --</option>';
+        data.states.forEach(st => {
+          const opt = document.createElement("option");
+          opt.value = st.name;
+          opt.textContent = `${st.name} (${st.name_hi})`;
+          if (activeStateName && (activeStateName.toLowerCase().includes(st.id) || st.name.toLowerCase().includes(activeStateName.toLowerCase()))) {
+            opt.selected = true;
+          }
+          select.appendChild(opt);
+        });
+      }
+    })
+    .catch(err => console.error("Error loading states:", err));
+}
+
+function switchStateAid(selectedState) {
+  if (!selectedState) return;
+  fetch(`/api/state-aid?state=${encodeURIComponent(selectedState)}&language=${currentLang === "hi" ? "Hindi" : "English"}`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === "success" && data.state_aid) {
+        const aid = data.state_aid;
+        const slsaName = document.getElementById("aidSlsaName");
+        const slsaHelpline = document.getElementById("aidSlsaHelpline");
+        const slsaWebsite = document.getElementById("aidSlsaWebsite");
+        const slsaAddress = document.getElementById("aidSlsaAddress");
+        const cyberCell = document.getElementById("aidCyberCell");
+        const cyberPortal = document.getElementById("aidCyberPortal");
+        const consumerComm = document.getElementById("aidConsumerCommission");
+        const freeThreshold = document.getElementById("aidFreeThreshold");
+
+        if (slsaName) slsaName.textContent = aid.slsa_name || "State Legal Services Authority";
+        if (slsaHelpline) slsaHelpline.innerHTML = `📞 Helpline: ${aid.slsa_helpline || "15100"}`;
+        if (slsaWebsite && aid.slsa_website) {
+          slsaWebsite.href = aid.slsa_website;
+          slsaWebsite.style.display = "block";
+        }
+        if (slsaAddress) slsaAddress.textContent = aid.slsa_address || "";
+        if (cyberCell) cyberCell.textContent = aid.cyber_cell || "State Cyber Crime Police Wing";
+        if (cyberPortal && aid.cyber_portal) {
+          cyberPortal.href = aid.cyber_portal;
+          cyberPortal.style.display = "block";
+        }
+        if (consumerComm) consumerComm.textContent = aid.consumer_commission || "State Consumer Commission";
+        if (freeThreshold) freeThreshold.textContent = aid.free_aid_threshold || "Free legal aid under Section 12, Legal Services Authorities Act, 1987.";
+
+        showToast(`Updated to ${aid.state_name}`);
+      }
+    })
+    .catch(err => console.error("Error fetching state aid:", err));
+}
+
+

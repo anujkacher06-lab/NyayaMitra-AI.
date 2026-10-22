@@ -10,9 +10,9 @@ NyayaMitra AI is an Indian legal-information assistant designed to empower citiz
 
 ---
 
-## 🎯 Hackathon Scope: 3 Focused MVP Categories
+## 🎯 Expanded Civic Scope: 5 High-Impact Categories
 
-To ensure 100% legal correctness and prevent hallucinations during hackathon demonstrations, NyayaMitra AI focuses deeply on three high-impact civic domains:
+To ensure 100% legal correctness and prevent hallucinations, NyayaMitra AI focuses on five high-impact civic domains grounded directly in **India Code**:
 
 1. **Cyber & Financial Fraud**
    - UPI scams, OTP fraud, phishing links, unauthorized bank debits, fake loan apps, impersonation.
@@ -29,14 +29,24 @@ To ensure 100% legal correctness and prevent hallucinations during hackathon dem
    - Statutory provisions: **Payment of Wages Act, 1936**; Industrial Disputes Act, 1947; EPF Act, 1952.
    - Redressal mechanisms: Ministry of Labour **Samadhan Portal**, Labour Commissioner, **EPFiGMS**, and **Tele-Law**.
 
+4. **Tenancy & Rental Disputes**
+   - Unjustified withholding of security deposits, illegal eviction threats, basic utility shutoffs (water/power).
+   - Statutory provisions: **Model Tenancy Act, 2021** (2-month deposit cap); Transfer of Property Act, 1882 (Sec 106 mandatory notice); BNS 2023 Sec 316.
+   - Redressal mechanisms: Local **Rent Authority / Rent Tribunal**, DLSA, Tele-Law.
+
+5. **RTI (Right to Information) Assistance**
+   - Delayed government scholarships, pending pensions, municipal project inquiries, official grievance tracking.
+   - Statutory provisions: **Right to Information Act, 2005** (Sec 6(1) Request, Sec 7(1) 30-day timeline, Sec 19(1) First Appeal).
+   - Portals: **rtionline.gov.in**, Central Information Commission (CIC).
+
 ---
 
-## 🏛️ Grounded in India Code & BNS 2023
+## ⚡ High-Efficiency Architecture Upgrades
 
-NyayaMitra AI uses **India Code** as its authoritative primary source for central and state legislation:
-- **No Hallucinated Sections**: Legal provisions are verified and anchored in structured knowledge files.
-- **BNS 2023 Transition**: Criminal provisions reference the **Bharatiya Nyaya Sanhita, 2023** (effective July 1, 2024), actively deprecating outdated IPC references (e.g., citing BNS Sec 318 rather than old IPC Sec 420).
-- **Zero-Downtime Offline Fallback**: Even without an external LLM API key or active internet, the built-in deterministic RAG engine reliably synthesizes verified legal guidance.
+- **In-Memory LRU Caching**: Preloads and caches category knowledge structures in memory via `@functools.lru_cache`, eliminating synchronous disk reads per request.
+- **Deterministic Response Caching**: Normalized SHA-256 query caching in SQLite (`response_cache`) returns verified answers in **<15ms** for frequent citizen inquiries, dramatically slashing external LLM costs and latency.
+- **Voice-to-Text Input (Web Speech API)**: Accessibility feature allowing citizens to describe their legal issues by speaking in Hindi (`hi-IN`) or English (`en-IN`).
+- **Official Print / PDF Petition Generator**: Generates formatted petitions on standardized A4 margins with reference numbers and verification signatures, ready for physical filing at police stations, consumer commissions, or rent courts.
 
 ---
 

@@ -1,0 +1,105 @@
+{
+  "category": "rti_assistance",
+  "title": {
+    "en": "RTI (Right to Information) Assistance",
+    "hi": "सूचना का अधिकार (RTI) सहायता"
+  },
+  "keywords": [
+    "rti",
+    "right to information",
+    "information commission",
+    "pio",
+    "public information officer",
+    "first appeal",
+    "delayed scholarship",
+    "pension delay",
+    "road work",
+    "government query",
+    "ration card delay",
+    "govt inaction",
+    "marksheet delay",
+    "आरटीआई",
+    "सूचना का अधिकार",
+    "जन सूचना अधिकारी",
+    "प्रथम अपील",
+    "पेंशन देरी",
+    "सरकारी जानकारी"
+  ],
+  "applicable_laws": [
+    "Right to Information Act, 2005 (Section 6(1) - Citizen's right to request information in writing or electronically)",
+    "Right to Information Act, 2005 (Section 7(1) - Mandatory disposal within 30 days, or 48 hours where life or liberty is involved)",
+    "Right to Information Act, 2005 (Section 19(1) - Right to file First Appeal before First Appellate Authority within 30 days)",
+    "Right to Information Act, 2005 (Section 20 - Imposition of personal penalty of ₹250 per day up to ₹25,000 on errant Public Information Officers)"
+  ],
+  "simple_explanation": {
+    "en": "Under the Right to Information (RTI) Act, 2005, every Indian citizen has the constitutional right to seek information, inspect public works, and obtain certified records from any central or state government department, public sector enterprise, or civic municipality.",
+    "hi": "सूचना का अधिकार अधिनियम, 2005 के अंतर्गत हर भारतीय नागरिक को किसी भी सरकारी विभाग, मंत्रालय, नगर निगम या सार्वजनिक उपक्रम से सूचना मांगने, फाइलों का निरीक्षण करने और प्रमाणित दस्तावेज प्राप्त करने का वैधानिक अधिकार है।"
+  },
+  "immediate_actions": {
+    "en": [
+      "Identify the specific Public Authority (Ministry, Department, Municipality, or University) and locate their Public Information Officer (PIO / CPIO).",
+      "Draft concise, pointed questions seeking specific facts, dates, records, or file-notings rather than opinions or legal interpretations.",
+      "Submit the application online via the Central RTI Portal (rtionline.gov.in) or your respective State RTI Portal with the nominal ₹10 statutory fee.",
+      "For offline submissions, send via Registered Post / Speed Post accompanied by a ₹10 Indian Postal Order (IPO) or Court Fee Stamp.",
+      "Track the mandatory 30-day statutory response clock; if unanswered after 30 days, immediately file a First Appeal under Section 19(1)."
+    ],
+    "hi": [
+      "संबंधित सरकारी विभाग, मंत्रालय या विश्वविद्यालय की पहचान करें और उनके केंद्रीय/राज्य जन सूचना अधिकारी (CPIO/SPIO) का पता लगाएं।",
+      "स्पष्ट और सटीक प्रश्न तैयार करें (जैसे फाइल नंबर, कार्रवाई की स्थिति, बजट व टेंडर का विवरण)। विचार या अनुमान न पूछें।",
+      "केंद्र सरकार के विभागों के लिए rtionline.gov.in पोर्टल पर या राज्य के आरटीआई पोर्टल पर ₹10 का ऑनलाइन शुल्क देकर आवेदन जमा करें।",
+      "ऑफलाइन आवेदन के लिए ₹10 का पोस्टल ऑर्डर (IPO) संलग्न करके स्पीड पोस्ट से आवेदन भेजें।",
+      "आवेदन की तारीख से 30 दिनों का समय नोट करें; यदि 30 दिन में उत्तर न मिले या गलत जानकारी दी जाए, तो धारा 19(1) के तहत प्रथम अपील दर्ज करें।"
+    ]
+  },
+  "evidence_checklist": {
+    "en": [
+      "Application copy submitted to the Public Information Officer (Form A)",
+      "Proof of ₹10 application fee payment (Online transaction receipt or IPO number)",
+      "Speed post / Registered post tracking slip and delivery confirmation printout",
+      "Any previous representation, grievance ID, or application filed with the department",
+      "Identity proof of the applicant (Aadhaar / Voter ID / Ration Card copy)",
+      "BPL (Below Poverty Line) certificate copy if claiming exemption from RTI fees"
+    ],
+    "hi": [
+      "जन सूचना अधिकारी को भेजे गए आरटीआई आवेदन की हस्ताक्षरित प्रति",
+      "₹10 आवेदन शुल्क की रसीद या पोस्टल ऑर्डर (IPO) संख्या",
+      "स्पीड पोस्ट / रजिस्टर्ड डाक की रसीद व डिलीवरी ट्रैकिंग स्लिप",
+      "विभाग को पहले दिए गए आवेदन या शिकायत संख्या की प्रति",
+      "आवेदक का पहचान पत्र (आधार कार्ड या वोटर कार्ड)",
+      "बीपीएल (गरीबी रेखा से नीचे) प्रमाण पत्र यदि निःशुल्क आवेदन का दावा हो"
+    ]
+  },
+  "official_resources": [
+    {
+      "name": "Central RTI Online Portal",
+      "name_hi": "केंद्रीय आरटीआई ऑनलाइन पोर्टल",
+      "authority": "Department of Personnel and Training (DoPT), Govt. of India",
+      "helpline": "011-24622461 (Helpdesk)",
+      "url": "https://rtionline.gov.in",
+      "description": "Unified national portal to file RTI applications and First Appeals for all Central Ministries and PSUs."
+    },
+    {
+      "name": "Central Information Commission (CIC)",
+      "name_hi": "केंद्रीय सूचना आयोग (CIC)",
+      "authority": "Apex Statutory Appellate Body under RTI Act, 2005",
+      "helpline": "011-26183996",
+      "url": "https://cic.gov.in",
+      "description": "Second Appellate Authority empowered to summon public officials, order disclosures, and levy penalties under Section 20."
+    },
+    {
+      "name": "Tele-Law Citizen Legal Aid",
+      "name_hi": "टेली-लॉ कानूनी सहायता",
+      "authority": "Ministry of Law and Justice, Govt. of India",
+      "helpline": "14488",
+      "url": "https://www.tele-law.in",
+      "description": "Free guidance on framing RTI queries and drafting effective First and Second Appeals."
+    }
+  ],
+  "complaint_template": {
+    "police_cyber_cell": {
+      "en": "FORM 'A'\nAPPLICATION FOR OBTAINING INFORMATION UNDER SECTION 6(1) OF THE RTI ACT, 2005\n\nDate: [CURRENT_DATE]\n\nTo,\nThe Central / State Public Information Officer (CPIO / SPIO),\n[NAME_OF_PUBLIC_AUTHORITY / DEPARTMENT / MINISTRY],\n[OFFICE_ADDRESS, PINCODE]\n\n1. Name of the Applicant: [USER_NAME]\n2. Contact Address: [USER_ADDRESS]\n3. Phone Number: [USER_PHONE]\n4. Email ID: [USER_EMAIL]\n5. Citizenship: Citizen of India\n\n6. PARTICULARS OF INFORMATION SOUGHT:\nSubject Matter: [BRIEF_DESCRIPTION]\n\nKindly provide certified true copies / information on the following specific points:\n(a) Certified copy of the daily progress report / action taken report on representation / application dated [INCIDENT_DATE] submitted by the applicant.\n(b) Name, designation, and official contact of the officers who processed or are responsible for processing the said matter.\n(c) Certified copy of all file-notings, office correspondence, and inter-departmental communications regarding the subject matter.\n(d) Statutory reasons recorded for the delay, if any, beyond the prescribed citizen charter timeline.\n\n7. PERIOD TO WHICH INFORMATION PERTAINS: From [INCIDENT_DATE] to [CURRENT_DATE].\n\n8. APPLICATION FEE DETAILS:\nAn application fee of ₹10 (Rupees Ten only) is paid herewith via [Online Payment / Indian Postal Order No. ____________ dated _________].\n\n9. Statutorily, as per Section 7(1) of the RTI Act, 2005, the requested information must be furnished within 30 days of receipt of this application.\n\nYours faithfully,\n\nName: [USER_NAME]\nAddress: [USER_ADDRESS]\nContact: [USER_PHONE]\nSignature: _______________________",
+      "hi": "प्रारूप 'क' (FORM 'A')\nसूचना का अधिकार अधिनियम, 2005 की धारा 6(1) के अंतर्गत सूचना प्राप्त करने हेतु आवेदन\n\nदिनांक: [CURRENT_DATE]\n\nसेवा में,\nकेंद्रीय / राज्य लोक सूचना अधिकारी (CPIO / SPIO),\n[विभाग / मंत्रालय / कार्यालय का नाम],\n[कार्यालय का पता, पिनकोड]\n\n1. आवेदक का नाम: [USER_NAME]\n2. पत्राचार का पता: [USER_ADDRESS]\n3. मोबाइल नंबर: [USER_PHONE]\n4. ईमेल आईडी: [USER_EMAIL]\n5. नागरिकता: भारतीय नागरिक\n\n6. चाही गई सूचना का विवरण:\nविषय: [BRIEF_DESCRIPTION]\n\nकृपया सूचना का अधिकार अधिनियम, 2005 के अंतर्गत निम्नलिखित बिंदुओं पर सत्यापित सूचना/प्रमाणित प्रतियां उपलब्ध कराने की कृपा करें:\n(क) आवेदक द्वारा दिनांक [INCIDENT_DATE] को दिए गए प्रार्थना पत्र / शिकायत पर की गई दैनिक कार्रवाई विवरण (Action Taken Report) की प्रमाणित प्रति।\n(ख) उक्त आवेदन पर अब तक निर्णय न होने के लिए जिम्मेदार अधिकारियों/कर्मचारियों के नाम एवं पदनाम का विवरण।\n(ग) संबंधित फाइल में दर्ज की गई समस्त टिप्पणियों (File Notings) की प्रमाणित छायाप्रति।\n(घ) सिटिजन चार्टर में निर्धारित समय-सीमा के उल्लंघन के क्या वैधानिक कारण दर्ज किए गए हैं?\n\n7. संबंधित समयावधि: दिनांक [INCIDENT_DATE] से [CURRENT_DATE] तक।\n\n8. आवेदन शुल्क विवरण:\nआवेदन शुल्क के रूप में ₹10/- (दस रुपये मात्र) [ऑनलाइन भुगतान / पोस्टल ऑर्डर संख्या: ____________] द्वारा संलग्न हैं।\n\n9. आरटीआई अधिनियम, 2005 की धारा 7(1) के अनुसार कृपया उक्त सूचना 30 दिनों के भीतर उपलब्ध कराएं।\n\nभवदीय,\n\nनाम: [USER_NAME]\nपता: [USER_ADDRESS]\nमोबाइल: [USER_PHONE]\nहस्ताक्षर: _______________________"
+    }
+  },
+  "verified_date": "2026-07-16"
+}

@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  nyayamitra:
+    build: .
+    container_name: nyayamitra_ai
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - SECRET_KEY=nyayamitra-production-secret-key-2026
+      - FLASK_ENV=production
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+    volumes:
+      - nyayamitra_db:/app/database
+
+volumes:
+  nyayamitra_db:
+    name: nyayamitra_db_data

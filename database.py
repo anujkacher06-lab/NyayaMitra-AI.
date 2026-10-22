@@ -1,6 +1,7 @@
 import os
 import json
 import sqlite3
+import hashlib
 from datetime import datetime
 
 DB_DIR = os.path.join(os.path.dirname(__file__), "database")
@@ -9,7 +10,7 @@ DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
 def get_db_connection():
     os.makedirs(DB_DIR, exist_ok=True)
-    conn = sqlite3.connect(DB_PATH)
+    conn = sqlite3.connect(DB_PATH, timeout=10.0)
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -18,6 +19,7 @@ def init_db():
     conn = get_db_connection()
     cursor = conn.cursor()
 
+    # 1. Legal resources table
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS legal_resources (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -32,6 +34,7 @@ def init_db():
     );
     """)
 
+    # 2. Citizen queries audit table
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS legal_queries (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -43,6 +46,7 @@ def init_db():
     );
     """)
 
+    # 3. User feedback table
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS feedback (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -54,6 +58,25 @@ def init_db():
     );
     """)
 
+    # 4. Response caching table for high efficiency & quota protection
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS response_cache (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        cache_key TEXT NOT NULL UNIQUE,
+        category TEXT NOT NULL,
+        question TEXT NOT NULL,
+        language TEXT NOT NULL,
+        response_json TEXT NOT NULL,
+        hit_count INTEGER DEFAULT 1,
+        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    );
+    """)
+
+    cursor.execute("""
+    CREATE INDEX IF NOT EXISTS idx_cache_key ON response_cache(cache_key);
+    """)
+
     conn.commit()
     conn.close()
     seed_resources()
@@ -62,7 +85,9 @@ def seed_resources():
     files = {
         "cyber_fraud": "cyber_fraud.json",
         "consumer_complaint": "consumer_issues.json",
-        "workplace_salary_issue": "employment_issues.json"
+        "workplace_salary_issue": "employment_issues.json",
+        "tenancy_dispute": "tenancy_issues.json",
+        "rti_assistance": "rti_assistance.json"
     }
 
     conn = get_db_connection()
@@ -99,6 +124,60 @@ def seed_resources():
             verified_at=excluded.verified_at
         """, (cat_key, title, explanation, actions, evidence, res_name, res_ref, verified_at))
 
+    conn.commit()
+    conn.close()
+
+def compute_cache_key(category: str, question: str, language: str) -> str:
+    """
+    Computes a deterministic hash of the normalized query for instant cache lookup.
+    """
+    normalized = f"{category.strip().lower()}|{language.strip().lower()}|{' '.join(question.strip().lower().split())}"
+    return hashlib.sha256(normalized.encode("utf-8")).hexdigest()
+
+def get_cached_response(category: str, question: str, language: str):
+    """
+    Retrieves cached legal response if available, bumping the hit count.
+    """
+    key = compute_cache_key(category, question, language)
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT response_json, hit_count FROM response_cache WHERE cache_key = ?
+    """, (key,))
+    row = cursor.fetchone()
+
+    if row:
+        cursor.execute("""
+            UPDATE response_cache 
+            SET hit_count = hit_count + 1, updated_at = CURRENT_TIMESTAMP 
+            WHERE cache_key = ?
+        """, (key,))
+        conn.commit()
+        conn.close()
+        try:
+            data = json.loads(row["response_json"])
+            data["from_cache"] = True
+            return data
+        except Exception:
+            return None
+
+    conn.close()
+    return None
+
+def set_cached_response(category: str, question: str, language: str, response_data: dict):
+    """
+    Stores an AI legal response into the persistent SQLite cache.
+    """
+    key = compute_cache_key(category, question, language)
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        INSERT INTO response_cache (cache_key, category, question, language, response_json)
+        VALUES (?, ?, ?, ?, ?)
+        ON CONFLICT(cache_key) DO UPDATE SET
+            response_json = excluded.response_json,
+            updated_at = CURRENT_TIMESTAMP
+    """, (key, category, question, language, json.dumps(response_data, ensure_ascii=False)))
     conn.commit()
     conn.close()
 

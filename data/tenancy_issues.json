@@ -1,0 +1,118 @@
+{
+  "category": "tenancy_dispute",
+  "title": {
+    "en": "Tenancy & Rental Disputes",
+    "hi": "किरायेदारी व मकान मालिक विवाद"
+  },
+  "keywords": [
+    "rent",
+    "landlord",
+    "tenant",
+    "security deposit",
+    "eviction",
+    "rent agreement",
+    "lease",
+    "broker",
+    "maintenance",
+    "vacate notice",
+    "deposit refund",
+    "electricity cut",
+    "water cut",
+    "rental dispute",
+    "flatmate",
+    "मकान मालिक",
+    "किराया",
+    "किरायेदार",
+    "सिक्योरिटी डिपॉजिट",
+    "मकान खाली",
+    "अवैध बेदखली",
+    "रेंट एग्रीमेंट"
+  ],
+  "applicable_laws": [
+    "Model Tenancy Act, 2021 (Limits residential security deposits to maximum 2 months, mandates written agreements, and penalizes illegal cutoff of essential utilities)",
+    "Transfer of Property Act, 1882 (Section 106 - Duration of leases and requirement of 15 to 30 days mandatory written notice before termination)",
+    "Bharatiya Nyaya Sanhita, 2023 (Section 329 - Criminal trespass by unauthorized lock change, Section 351 - Criminal intimidation, Section 316 - Criminal breach of trust regarding security deposit refund)",
+    "State Rent Control & Tenancy Acts (Protection against arbitrary eviction and unauthorized rent hikes beyond agreed escalation)"
+  ],
+  "simple_explanation": {
+    "en": "Tenancy and rental disputes arise between tenants and landlords regarding unjustified withholding of security deposits, unlawful eviction threats without statutory notice, arbitrary rent hikes, or illegal cutoff of basic utilities like water and electricity.",
+    "hi": "किरायेदारी विवाद मकान मालिक और किरायेदार के बीच बिना उचित नोटिस के मकान खाली कराने की धमकी, सिक्योरिटी डिपॉजिट वापस न करने, मनमाने ढंग से किराया बढ़ाने या पानी-बिजली जैसी बुनियादी सुविधाएं काटने से जुड़े होते हैं।"
+  },
+  "immediate_actions": {
+    "en": [
+      "Review your registered or notarized Rent/Lease Agreement for lock-in periods, notice duration (standard 30 days), and deposit refund covenants.",
+      "Do not vacate under verbal or physical intimidation; landlords cannot dispossess a tenant without due process of law or written notice under Section 106 of the Transfer of Property Act.",
+      "Safeguard all payment proofs (bank transfers, UPI slips); do not pay rent in cash without a signed rent receipt.",
+      "If the landlord disconnects water or electricity, file an immediate complaint with the local Police and Rent Authority under the Model Tenancy Act.",
+      "Send a formal written Legal Demand Notice by Registered Post AD or speed post seeking refund of security deposit with 18% p.a. interest within 15 days."
+    ],
+    "hi": [
+      "अपने हस्ताक्षरित रेंट एग्रीमेंट में नोटिस अवधि (आमतौर पर 30 दिन), लॉक-इन क्लॉज और सिक्योरिटी डिपॉजिट वापसी की शर्तों की जांच करें।",
+      "केवल मौखिक धमकी पर घर खाली न करें; कानूनन मकान मालिक बिना उचित कानूनी प्रक्रिया व लिखित नोटिस के जबरन मकान खाली नहीं करा सकता।",
+      "किराया और डिपॉजिट भुगतान के सभी डिजिटल सबूत (बैंक ट्रांसफर, UPI) सुरक्षित रखें।",
+      "यदि मकान मालिक पानी या बिजली जैसी आवश्यक सेवाएं काट दे, तो स्थानीय पुलिस थाने और रेंट अथॉरिटी में तत्काल शिकायत दर्ज करें।",
+      "डिपॉजिट न लौटाने पर रजिस्टर्ड डाक या ईमेल के माध्यम से 15 दिनों के भीतर ब्याज सहित राशि लौटाने का कानूनी मांग पत्र (Legal Notice) भेजें।"
+    ]
+  },
+  "evidence_checklist": {
+    "en": [
+      "Signed Rent / Lease Agreement with stamp paper proof",
+      "Bank statements or UPI transaction receipts showing monthly rent payments",
+      "Security deposit transfer receipt / payment confirmation",
+      "WhatsApp chats, text messages, or emails discussing eviction, repairs, or deposit",
+      "Photographs or videos showing property condition upon moving out",
+      "Copy of written termination / eviction notice received or sent",
+      "Receipts of utility bills (electricity, water, maintenance) paid by tenant"
+    ],
+    "hi": [
+      "हस्ताक्षरित रेंट / लीज एग्रीमेंट की प्रति",
+      "मासिक किराया भुगतान का बैंक खाता विवरण या UPI रसीदें",
+      "सिक्योरिटी डिपॉजिट भुगतान का बैंक ट्रांसफर प्रमाण",
+      "मकान मालिक या एजेंट के साथ बातचीत (व्हाट्सएप/ईमेल/एसएमएस)",
+      "मकान खाली करते समय संपत्ति की स्थिति की फोटो या वीडियो",
+      "दी गई या प्राप्त हुई लिखित नोटिस की प्रति",
+      "बिजली, पानी व मेंटेनेंस बिल भुगतान की रसीदें"
+    ]
+  },
+  "official_resources": [
+    {
+      "name": "Local Rent Authority / Rent Tribunal",
+      "name_hi": "स्थानीय रेंट अथॉरिटी / रेंट कोर्ट",
+      "authority": "District Magistrate / Deputy Collector Office under Tenancy Act",
+      "helpline": "N/A (District Collectorate)",
+      "url": "https://mohua.gov.in/upload/uploadfiles/files/Model_Tenancy_Act_English.pdf",
+      "description": "Statutory body empowered to adjudicate tenancy disputes, eviction petitions, and deposit refunds."
+    },
+    {
+      "name": "NALSA (National Legal Services Authority)",
+      "name_hi": "नालसा (राष्ट्रीय विधिक सेवा प्राधिकरण)",
+      "authority": "Statutory body under Legal Services Authorities Act, 1987",
+      "helpline": "15100",
+      "url": "https://nalsa.gov.in",
+      "description": "Provides free legal aid and mediation/conciliation services for tenant-landlord disputes."
+    },
+    {
+      "name": "Tele-Law Citizen Portal",
+      "name_hi": "टेली-लॉ कानूनी परामर्श पोर्टल",
+      "authority": "Department of Justice, Govt. of India",
+      "helpline": "14488",
+      "url": "https://www.tele-law.in",
+      "description": "Consult qualified panel lawyers online regarding rental agreements, illegal lockouts, and recovery notices."
+    },
+    {
+      "name": "District Legal Services Authority (DLSA)",
+      "name_hi": "जिला विधिक सेवा प्राधिकरण (DLSA)",
+      "authority": "District Court Complex in every Indian district",
+      "helpline": "Contact Local District Court",
+      "url": "https://nalsa.gov.in/dlsa",
+      "description": "Offers free pre-litigation mediation and Lok Adalat settlement between landlords and tenants."
+    }
+  ],
+  "complaint_template": {
+    "police_cyber_cell": {
+      "en": "LEGAL DEMAND NOTICE\n(By Speed Post / Registered Post AD & Email)\n\nDate: [CURRENT_DATE]\n\nTo,\n[LANDLORD_NAME]\nAddress: [LANDLORD_ADDRESS]\nContact: [LANDLORD_PHONE]\n\nSubject: Formal Legal Notice for Immediate Refund of Security Deposit of ₹[AMOUNT] under Rent Agreement dated [INCIDENT_DATE]\n\nSir/Madam,\n\nUnder instructions and authority from my client / complainant, [USER_NAME], residing at [USER_ADDRESS], I hereby serve upon you this formal Legal Notice:\n\n1. That the Complainant took on rent your premises situated at [RENTED_PREMISES_ADDRESS] pursuant to a mutual tenancy agreement.\n2. That at the inception of tenancy, the Complainant paid an interest-free refundable Security Deposit of ₹[AMOUNT] via bank transfer on [INCIDENT_DATE].\n3. That the Complainant has duly cleared all monthly rentals and utility dues, and lawfully handed over peaceful and vacant possession of the premises on [VACATE_DATE] after giving stipulated notice.\n4. That despite multiple requests and inspection confirming no structural damages, you have unlawfully and unjustifiably withheld the refund of the said Security Deposit.\n5. That your refusal constitutes Criminal Breach of Trust under Section 316 of the Bharatiya Nyaya Sanhita (BNS), 2023 and a clear violation of the Model Tenancy Act.\n\nPRAYER & DEMAND:\nYou are hereby called upon to refund the entire Security Deposit sum of ₹[AMOUNT] along with interest @ 18% p.a. within 15 (fifteen) days of receipt of this notice, failing which my client shall initiate appropriate civil recovery proceedings before the Rent Tribunal and lodge a criminal complaint without further reference, at your sole risk and costs.\n\nYours faithfully,\n\nName: [USER_NAME]\nAddress: [USER_ADDRESS]\nPhone: [USER_PHONE]\nEmail: [USER_EMAIL]\nSignature: _______________________",
+      "hi": "कानूनी मांग पत्र (LEGAL DEMAND NOTICE)\n(रजिस्टर्ड डाक / स्पीड पोस्ट व ईमेल द्वारा)\n\nदिनांक: [CURRENT_DATE]\n\nसेवा में,\n[LANDLORD_NAME]\nपता: [LANDLORD_ADDRESS]\nमोबाइल: [LANDLORD_PHONE]\n\nविषय: रेंट एग्रीमेंट के तहत ₹[AMOUNT] की सिक्योरिटी डिपॉजिट राशि तत्काल वापस करने हेतु कानूनी नोटिस\n\nमहोदय/महोदया,\n\nप्रार्थी [USER_NAME], निवासी [USER_ADDRESS] द्वारा यह कानूनी मांग पत्र आपको प्रेषित किया जा रहा है:\n\n1. यह कि प्रार्थी ने आपके मकान/फ्लैट [RENTED_PREMISES_ADDRESS] को किराये पर लिया था।\n2. यह कि किरायेदारी की शुरुआत में प्रार्थी द्वारा आपको ₹[AMOUNT] की सिक्योरिटी डिपॉजिट राशि का ऑनलाइन भुगतान [INCIDENT_DATE] को किया गया था।\n3. यह कि प्रार्थी ने अनुबंधानुसार समस्त मासिक किराया व बिजली बिलों का समय पर भुगतान किया और नियमानुसार नोटिस देकर [VACATE_DATE] को परिसर का शांतिपूर्ण कब्जा आपको सौंप दिया।\n4. यह कि परिसर में कोई क्षति न होने के बावजूद आपके द्वारा प्रार्थी की सिक्योरिटी डिपॉजिट राशि अनुचित व अवैध रूप से रोक ली गई है।\n5. यह कृत्य भारतीय न्याय संहिता (BNS), 2023 की धारा 316 (आपराधिक विश्वासघात) तथा मॉडल टेनेंसी एक्ट का खुला उल्लंघन है।\n\nमांग:\nअतः इस नोटिस के माध्यम से आपको सूचित किया जाता है कि 15 (पंद्रह) दिनों के भीतर प्रार्थी की कुल सिक्योरिटी डिपॉजिट राशि ₹[AMOUNT] ब्याज सहित वापस करें। ऐसा न करने की स्थिति में प्रार्थी रेंट ट्रिब्यूनल व सक्षम न्यायालय में कानूनी कार्रवाई करने हेतु बाध्य होगा, जिसका संपूर्ण हर्जा-खर्चा आपका होगा।\n\nभवदीय,\n\nनाम: [USER_NAME]\nपता: [USER_ADDRESS]\nमोबाइल: [USER_PHONE]\nहस्ताक्षर: _______________________"
+    }
+  },
+  "verified_date": "2026-07-16"
+}

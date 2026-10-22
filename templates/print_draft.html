@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NyayaMitra Official Legal Grievance Petition</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Tinos:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap');
+
+    :root {
+      --primary: #0f172a;
+      --border: #334155;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: #f1f5f9;
+      font-family: 'Tinos', Georgia, serif;
+      color: #111827;
+      line-height: 1.65;
+      padding: 2rem 1rem;
+    }
+
+    .toolbar {
+      max-width: 820px;
+      margin: 0 auto 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #ffffff;
+      padding: 0.75rem 1.25rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      font-family: 'Inter', sans-serif;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.55rem 1.1rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: #2563eb;
+      color: #ffffff;
+    }
+    .btn-primary:hover {
+      background: #1d4ed8;
+    }
+
+    .btn-outline {
+      background: #f8fafc;
+      color: #334155;
+      border: 1px solid #cbd5e1;
+    }
+    .btn-outline:hover {
+      background: #e2e8f0;
+    }
+
+    /* A4 Paper simulation */
+    .a4-sheet {
+      max-width: 820px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 3rem 3.5rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      border-radius: 4px;
+      min-height: 1100px;
+      position: relative;
+    }
+
+    .watermark-emblem {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 18rem;
+      opacity: 0.03;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .doc-header {
+      text-align: center;
+      border-bottom: 2px solid #0f172a;
+      padding-bottom: 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    .doc-header h1 {
+      font-size: 1.5rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+
+    .doc-header .sub-ref {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem;
+      color: #64748b;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .petition-body {
+      white-space: pre-wrap;
+      font-size: 1.05rem;
+      line-height: 1.8;
+      text-align: justify;
+    }
+
+    .doc-footer {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px dashed #cbd5e1;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.75rem;
+      color: #64748b;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    @media print {
+      body {
+        background: #ffffff;
+        padding: 0;
+      }
+      .toolbar {
+        display: none !important;
+      }
+      .a4-sheet {
+        box-shadow: none;
+        padding: 15mm 20mm;
+        margin: 0;
+        max-width: 100%;
+        min-height: auto;
+      }
+      @page {
+        size: A4;
+        margin: 15mm 20mm;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="toolbar">
+    <a href="javascript:history.back()" class="btn btn-outline">
+      &larr; Back to Guidance
+    </a>
+    <div style="font-size: 0.88rem; color: #475569;">
+      <strong>NyayaMitra Official Draft</strong> • Ready for Print / PDF Export
+    </div>
+    <button onclick="window.print()" class="btn btn-primary">
+      🖨️ Print / Save as PDF
+    </button>
+  </div>
+
+  <div class="a4-sheet">
+    <div class="watermark-emblem">⚖️</div>
+
+    <div class="doc-header">
+      <div class="sub-ref">NyayaMitra AI Citizen Redressal Document • Ref #{{ query_id or 'NM-2026' }}</div>
+      <h1>Official Formal Complaint / Notice Petition</h1>
+      <div class="sub-ref">Grounded under India Code Statutes & Official Government Portals</div>
+    </div>
+
+    <div class="petition-body">{{ draft_content }}</div>
+
+    <div class="doc-footer">
+      <div>Prepared via NyayaMitra AI (BNS 2023 / India Code Compliant)</div>
+      <div>Page 1 of 1 • Certified Copy for Citizen Submission</div>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -108,6 +108,22 @@
         <p data-i18n="catWorkplaceDesc">Unpaid wages, delayed salaries, withheld PF/gratuity, and wrongful termination.</p>
         <span class="cat-statutory-pill">Payment of Wages Act 1936</span>
       </div>
+
+      <!-- Tenancy & Rental Disputes -->
+      <div class="cat-card" data-cat="tenancy_dispute" onclick="selectCategory('tenancy_dispute')">
+        <div class="cat-icon-wrap">🏠</div>
+        <h3 data-i18n="catTenancyTitle">Tenancy & Rent Disputes</h3>
+        <p data-i18n="catTenancyDesc">Withheld security deposits, illegal eviction notice, arbitrary rent hike & basic utility cuts.</p>
+        <span class="cat-statutory-pill">Model Tenancy Act 2021 • BNS 316</span>
+      </div>
+
+      <!-- RTI Assistance -->
+      <div class="cat-card" data-cat="rti_assistance" onclick="selectCategory('rti_assistance')">
+        <div class="cat-icon-wrap">📜</div>
+        <h3 data-i18n="catRtiTitle">RTI (Right to Information)</h3>
+        <p data-i18n="catRtiDesc">Seeking government records, pending pension/scholarship status, and public project audit.</p>
+        <span class="cat-statutory-pill">RTI Act 2005 (Sec 6 & 19)</span>
+      </div>
     </section>
 
     <!-- Query Form -->
@@ -158,9 +174,15 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label" for="problemInput">
-              <span data-i18n="labelProblem">Describe What Happened</span>
-            </label>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <label class="form-label" for="problemInput" style="margin-bottom: 0;">
+                <span data-i18n="labelProblem">Describe What Happened</span>
+              </label>
+              <button type="button" id="voiceBtn" class="voice-input-btn" onclick="toggleVoiceRecognition()" title="Speak in Hindi or English">
+                <span id="voiceIcon">🎙️</span>
+                <span id="voiceText" data-i18n="btnVoiceInput">Voice Input (बोलकर लिखें)</span>
+              </button>
+            </div>
             <textarea id="problemInput" name="problem_description" class="form-textarea" required
               placeholder="e.g., I received an SMS with a link claiming electricity bill overdue. After clicking it and entering UPI PIN, ₹15,000 was debited from my account."></textarea>
             
@@ -177,6 +199,12 @@
                 </button>
                 <button type="button" class="sample-pill" onclick="fillSamplePrompt('salary')" data-i18n="sampleSalary">
                   💼 Employer has not paid last 2 months salary & F&F
+                </button>
+                <button type="button" class="sample-pill" onclick="fillSamplePrompt('tenancy')" data-i18n="sampleTenancy">
+                  🏠 Landlord refusing ₹40,000 deposit refund after vacating
+                </button>
+                <button type="button" class="sample-pill" onclick="fillSamplePrompt('rti')" data-i18n="sampleRti">
+                  📜 File RTI for pending scholarship status & delay reason
                 </button>
               </div>
             </div>
@@ -210,6 +238,45 @@
         <span style="font-size: 0.9rem; font-weight: 600; color: #94a3b8;">🛒 e-Daakhil & INGRAM</span>
       </div>
     </section>
+
+    <!-- Interactive State Legal Aid Finder -->
+    <section class="state-directory-section" id="stateLegalAidFinder">
+      <div class="directory-card">
+        <div class="directory-header">
+          <div class="directory-title">
+            <h3>📍 State Legal Aid Finder / राज्य कानूनी सहायता खोजें</h3>
+            <p>Select your state to instantly see your State Legal Services Authority, Cyber Cell, and Consumer Commission contacts.</p>
+          </div>
+          <div class="directory-selector-wrap">
+            <select id="stateSelectorDropdown" class="directory-select" onchange="switchStateAid(this.value)">
+              <option value="">-- Choose State / UT --</option>
+            </select>
+          </div>
+        </div>
+        <div class="state-aid-grid" id="stateLiveAidGrid">
+          <div class="state-aid-item">
+            <div class="state-aid-label">State Legal Services Authority (SLSA)</div>
+            <div class="state-aid-value" id="aidSlsaName">National Legal Services Authority (NALSA)</div>
+            <div style="font-size:0.8rem;color:#38bdf8;margin-top:0.35rem;font-weight:600;" id="aidSlsaHelpline">📞 Helpline: 15100 (Toll Free, 24x7)</div>
+            <a href="https://nalsa.gov.in" id="aidSlsaWebsite" target="_blank" style="font-size:0.78rem;color:#93c5fd;text-decoration:underline;display:block;margin-top:0.2rem;">Visit Portal</a>
+            <div style="font-size:0.75rem;color:var(--text-dim);margin-top:0.25rem;" id="aidSlsaAddress">B-Block, Additional Building Complex, Supreme Court of India, New Delhi - 110001</div>
+          </div>
+          <div class="state-aid-item">
+            <div class="state-aid-label">State Cyber Crime Nodal Wing</div>
+            <div class="state-aid-value" id="aidCyberCell">Indian Cybercrime Coordination Centre (I4C), MHA</div>
+            <a href="https://cybercrime.gov.in" id="aidCyberPortal" target="_blank" style="font-size:0.78rem;color:#93c5fd;text-decoration:underline;display:block;margin-top:0.35rem;">Official Cyber Portal</a>
+          </div>
+          <div class="state-aid-item">
+            <div class="state-aid-label">Consumer Disputes Redressal</div>
+            <div class="state-aid-value" id="aidConsumerCommission">National Consumer Disputes Redressal Commission (NCDRC), INA, New Delhi (Helpline: 1915)</div>
+          </div>
+          <div class="state-aid-item">
+            <div class="state-aid-label">Free Legal Aid Eligibility</div>
+            <div class="state-aid-value" style="font-size:0.82rem;font-weight:500;color:#cbd5e1;" id="aidFreeThreshold">Free under Section 12 of Legal Services Authorities Act, 1987 for women, children, SC/ST, disabled persons, and industrial workers.</div>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 
   <!-- Footer -->
@@ -236,8 +303,15 @@
         if (cat === "cyber_fraud") display.value = currentLang === "hi" ? "साइबर और वित्तीय धोखाधड़ी" : "Cyber & Financial Fraud";
         else if (cat === "consumer_complaint") display.value = currentLang === "hi" ? "उपभोक्ता शिकायत व विवाद" : "Consumer Complaints & Disputes";
         else if (cat === "workplace_salary_issue") display.value = currentLang === "hi" ? "कार्यस्थल व वेतन संबंधी समस्याएं" : "Workplace & Salary Issues";
+        else if (cat === "tenancy_dispute") display.value = currentLang === "hi" ? "किरायेदारी व मकान मालिक विवाद" : "Tenancy & Rent Disputes";
+        else if (cat === "rti_assistance") display.value = currentLang === "hi" ? "सूचना का अधिकार (RTI) सहायता" : "RTI (Right to Information)";
       }
     };
+
+    // Auto-populate State Legal Aid Finder dropdown on page load
+    document.addEventListener("DOMContentLoaded", () => {
+      loadStateAidDropdown("stateSelectorDropdown");
+    });
   </script>
 </body>
 </html>
