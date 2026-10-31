@@ -10,7 +10,8 @@ import ai_service
 load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = os.getenv("SECRET_KEY", "nyayamitra-secret-key-2026")
+# Generate secure random secret if not explicitly configured in environment
+app.secret_key = os.getenv("SECRET_KEY") or os.urandom(24).hex()
 
 # Initialize database and seed knowledge tables on startup
 database.init_db()
@@ -48,20 +49,18 @@ def ask():
         # Step 3: High-efficiency Response Cache Check (avoids repeated LLM calls)
         cached_response = database.get_cached_response(detected_category, question, language)
         if cached_response:
-            response_data = cached_response
-            response_data["user_name"] = user_name
-            response_data["state"] = state
-            response_data["language"] = language
-            response_data["category_id"] = detected_category
+            response_data = dict(cached_response)
         else:
             # Step 4: Safe AI synthesis with strict verified context & fallback
             response_data = ai_service.generate_legal_response(detected_category, question, verified_ctx, language)
-            response_data["user_name"] = user_name
-            response_data["state"] = state
-            response_data["language"] = language
-            response_data["category_id"] = detected_category
-            # Store in cache
+            # Store sanitized statutory legal analysis in cache (without user-specific details)
             database.set_cached_response(detected_category, question, language, response_data)
+
+        # Attach citizen query specific attributes
+        response_data["user_name"] = user_name
+        response_data["state"] = state
+        response_data["language"] = language
+        response_data["category_id"] = detected_category
 
         # Step 5: Attach State Legal Services Authority details
         response_data["state_aid"] = legal_retriever.get_state_legal_aid(state, language)
@@ -95,14 +94,14 @@ def follow_up():
         follow_up_q = (data.get("question") or "").strip()
 
         if not follow_up_q:
-            return jsonify({"error": "Please enter a follow-up question."}), 400
+            return jsonify({"status": "error", "message": "Please enter a follow-up question."}), 400
 
         original_q = ""
         category = "cyber_fraud"
         language = "English"
 
-        if query_id:
-            record = database.get_query_by_id(int(query_id))
+        if query_id is not None and str(query_id).strip():
+            record = database.get_query_by_id(query_id)
             if record:
                 original_q = record["question"]
                 category = record["category"]
@@ -123,7 +122,8 @@ def follow_up():
             "answer": answer
         })
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        print(f"Error in follow-up route: {e}")
+        return jsonify({"status": "error", "message": "Unable to process follow-up question at this moment. Please try again."}), 500
 
 @app.route("/generate-draft", methods=["POST"])
 def generate_draft():
@@ -152,50 +152,48 @@ def generate_draft():
             "draft": draft_content
         })
     except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 500
+        print(f"Error generating draft: {e}")
+        return jsonify({"status": "error", "message": "Could not generate legal draft. Please check the inputs."}), 500
 
 @app.route("/scan-document", methods=["POST"])
 def scan_document():
     """
-    Parses document text or image uploads to extract legal dispute entities
-    (amount, 12-digit UTR, date, and classified legal category).
+    Parses document text, transaction receipts, or image uploads using multi-tiered OCR
+    (Gemini 1.5 Flash Vision, OpenAI Vision, local Tesseract, or Pillow image metadata)
+    to extract dispute entities (amount, 12-digit UTR, date, payment app, and category).
     """
     try:
         raw_text = ""
+        file_bytes = b""
+        filename = ""
+        mime_type = ""
+        language = "English"
+
         if request.is_json:
-            data = request.get_json()
+            data = request.get_json() or {}
             raw_text = data.get("text", "")
-        elif "text" in request.form:
-            raw_text = request.form.get("text", "")
-        elif "file" in request.files:
-            file = request.files["file"]
-            filename = file.filename or "receipt"
-            raw_text = f"Attached document: {filename}."
+            language = data.get("language", "English")
+        else:
+            if request.form:
+                raw_text = request.form.get("text", "")
+                language = request.form.get("language", "English")
+            if request.files and "file" in request.files:
+                uploaded_file = request.files["file"]
+                filename = uploaded_file.filename or "receipt"
+                mime_type = uploaded_file.mimetype or ""
+                file_bytes = uploaded_file.read()
 
-        import re
-        amt_match = re.search(r'(?:₹|rs\.?|inr)\s*([0-9,]+(?:\.\d{2})?)', raw_text, re.IGNORECASE)
-        amount = amt_match.group(1) if amt_match else ""
-
-        utr_match = re.search(r'\b(\d{12})\b', raw_text)
-        utr = utr_match.group(1) if utr_match else ""
-
-        date_match = re.search(r'\b(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})\b', raw_text)
-        incident_date = date_match.group(1) if date_match else ""
-
-        detected_cat = legal_retriever.detect_category(raw_text)
-
-        return jsonify({
-            "status": "success",
-            "extracted_text": raw_text,
-            "entities": {
-                "amount": amount,
-                "utr": utr,
-                "incident_date": incident_date,
-                "detected_category": detected_cat
-            }
-        })
+        payload = ai_service.parse_document_or_receipt(
+            file_bytes=file_bytes,
+            filename=filename,
+            mime_type=mime_type,
+            text_context=raw_text,
+            language=language
+        )
+        return jsonify(payload)
     except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 500
+        print(f"Error scanning document text: {e}")
+        return jsonify({"status": "error", "message": "Failed to parse document text. Please provide valid text or transaction details."}), 500
 
 @app.route("/print-draft", methods=["GET", "POST"])
 def print_draft():
@@ -211,7 +209,7 @@ def print_draft():
         draft_content = request.args.get("draft", "")
 
         if query_id and not draft_content:
-            query_record = database.get_query_by_id(int(query_id))
+            query_record = database.get_query_by_id(query_id)
             if query_record:
                 try:
                     cat = query_record["category"]
@@ -364,14 +362,27 @@ def view_query(query_id):
 def feedback():
     try:
         data = request.get_json() if request.is_json else request.form
-        query_id = int(data.get("query_id"))
-        rating = int(data.get("rating", 5))
-        comments = data.get("comments", "").strip()
+        if not data:
+            return jsonify({"status": "error", "message": "No feedback data provided."}), 400
+
+        raw_qid = data.get("query_id")
+        try:
+            query_id = int(raw_qid)
+        except (ValueError, TypeError):
+            return jsonify({"status": "error", "message": "Valid numeric query ID is required."}), 400
+
+        try:
+            rating = int(data.get("rating", 5))
+        except (ValueError, TypeError):
+            rating = 5
+        rating = max(1, min(5, rating))
+        comments = (data.get("comments") or "").strip()
 
         feedback_id = database.save_feedback(query_id, rating, comments)
         return jsonify({"status": "success", "feedback_id": feedback_id, "message": "Feedback recorded. Thank you!"})
     except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 400
+        print(f"Error saving feedback: {e}")
+        return jsonify({"status": "error", "message": "Unable to save feedback at this moment. Please try again."}), 500
 
 @app.route("/health")
 def health():
@@ -404,4 +415,6 @@ def health():
     })
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=5000)
+    # Security: Default to debug=False; enable only when FLASK_DEBUG=true is explicitly set
+    debug_mode = os.getenv("FLASK_DEBUG", "false").lower() in ("true", "1")
+    app.run(debug=debug_mode, host="0.0.0.0", port=int(os.getenv("PORT", 5000)))

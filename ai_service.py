@@ -1,6 +1,10 @@
 import os
 import json
 import requests
+import io
+import re
+import base64
+from PIL import Image
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -95,8 +99,8 @@ def generate_fallback_response(category: str, question: str, verified_ctx: dict,
     }
 
 def query_gemini_api(api_key: str, system_prompt: str, user_content: str) -> str:
-    # Use Gemini REST API
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+    # Use Gemini REST API with header-based authentication to avoid logging API keys in URLs
+    url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
     payload = {
         "contents": [
             {
@@ -111,14 +115,17 @@ def query_gemini_api(api_key: str, system_prompt: str, user_content: str) -> str
             "responseMimeType": "application/json"
         }
     }
-    headers = {"Content-Type": "application/json"}
+    headers = {
+        "Content-Type": "application/json",
+        "x-goog-api-key": api_key
+    }
     resp = requests.post(url, json=payload, headers=headers, timeout=12)
     if resp.status_code == 200:
         data = resp.json()
         candidates = data.get("candidates", [])
         if candidates:
             return candidates[0]["content"]["parts"][0]["text"]
-    raise Exception(f"Gemini API returned status {resp.status_code}: {resp.text}")
+    raise Exception(f"Gemini API returned status {resp.status_code}")
 
 def query_openai_api(api_key: str, system_prompt: str, user_content: str) -> str:
     url = "https://api.openai.com/v1/chat/completions"
@@ -310,4 +317,334 @@ Language: {'Hindi' if is_hi else 'English'}
                 "2. Quote your formal acknowledgment reference number in all subsequent correspondence with authorities.\n"
                 "3. For tailored procedural assistance, contact the National Legal Services Authority (Helpline: 15100) or Tele-Law (14488)."
             )
+
+VISION_OCR_PROMPT = """You are an expert Indian legal aid OCR and transaction receipt parser for NyayaMitra AI.
+Analyze this document image (which may be a UPI payment receipt, bank debit SMS screenshot, e-commerce order invoice, rent agreement notice, or workplace salary slip).
+Carefully transcribe all readable text and extract key legal and transaction entities.
+
+Return ONLY a valid JSON object matching this schema:
+{
+  "extracted_text": "Complete transcribed text from the image, preserving numbers, names, and timestamps accurately.",
+  "amount": "The transaction or claim amount with comma formatting if present (e.g. '14,500' or '5,000.00'), or empty string if not found",
+  "utr": "The 12-digit UPI UTR reference number or bank transaction ID, or empty string if not found",
+  "incident_date": "The date of the transaction or notice in DD/MM/YYYY or readable date format, or empty string if not found",
+  "payment_app": "The app or channel if identifiable (e.g. 'PhonePe', 'Google Pay', 'Paytm', 'BHIM', 'SBI YONO', 'Netbanking'), or empty string",
+  "sender_or_victim": "Name of sender/remitter/complainant if visible, or empty string",
+  "recipient_or_accused": "Name of recipient/merchant/landlord/accused if visible, or empty string",
+  "detected_category": "One of: 'cyber_fraud', 'consumer_complaint', 'workplace_salary_issue', 'tenancy_dispute', 'rti_assistance'",
+  "summary": "A concise 1-2 sentence factual summary of the incident for a formal legal complaint (e.g. 'Unauthorized UPI debit of ₹14,500 via PhonePe on 15/07/2026 with UTR 412345678901.')"
+}
+"""
+
+def query_gemini_vision(api_key: str, image_bytes: bytes, mime_type: str, prompt: str = VISION_OCR_PROMPT) -> dict:
+    """
+    Multimodal Gemini 1.5 Flash Vision OCR for receipts and legal documents.
+    """
+    url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
+    b64_img = base64.b64encode(image_bytes).decode("utf-8")
+    payload = {
+        "contents": [
+            {
+                "role": "user",
+                "parts": [
+                    {"text": prompt},
+                    {
+                        "inline_data": {
+                            "mime_type": mime_type or "image/jpeg",
+                            "data": b64_img
+                        }
+                    }
+                ]
+            }
+        ],
+        "generationConfig": {
+            "temperature": 0.1,
+            "responseMimeType": "application/json"
+        }
+    }
+    headers = {
+        "Content-Type": "application/json",
+        "x-goog-api-key": api_key
+    }
+    resp = requests.post(url, json=payload, headers=headers, timeout=15)
+    if resp.status_code == 200:
+        data = resp.json()
+        candidates = data.get("candidates", [])
+        if candidates:
+            raw_text = candidates[0]["content"]["parts"][0]["text"]
+            return json.loads(raw_text)
+    raise Exception(f"Gemini Vision API returned status {resp.status_code}")
+
+def query_openai_vision(api_key: str, image_bytes: bytes, mime_type: str, prompt: str = VISION_OCR_PROMPT) -> dict:
+    """
+    Multimodal OpenAI GPT-4o-mini Vision OCR for receipts and legal documents.
+    """
+    url = "https://api.openai.com/v1/chat/completions"
+    b64_img = base64.b64encode(image_bytes).decode("utf-8")
+    mime = mime_type or "image/jpeg"
+    payload = {
+        "model": "gpt-4o-mini",
+        "messages": [
+            {
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": prompt},
+                    {
+                        "type": "image_url",
+                        "image_url": {
+                            "url": f"data:{mime};base64,{b64_img}"
+                        }
+                    }
+                ]
+            }
+        ],
+        "response_format": {"type": "json_object"}
+    }
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {api_key}"
+    }
+    resp = requests.post(url, json=payload, headers=headers, timeout=15)
+    if resp.status_code == 200:
+        data = resp.json()
+        raw_text = data["choices"][0]["message"]["content"]
+        return json.loads(raw_text)
+    raise Exception(f"OpenAI Vision API returned status {resp.status_code}")
+
+def extract_entities_from_text(text: str) -> dict:
+    """
+    Regex entity extraction tailored for Indian payment apps, UPI, and civil legal disputes.
+    """
+    # Amount
+    amt_match = re.search(r'(?:₹|rs\.?|inr)\s*([0-9,]+(?:\.\d{2})?)', text, re.IGNORECASE)
+    if not amt_match:
+        amt_match = re.search(r'(?:debited|deducted|paid|amount|amt)[:\s]*([0-9,]+(?:\.\d{2})?)', text, re.IGNORECASE)
+    amount = amt_match.group(1).strip() if amt_match else ""
+
+    # UTR / 12-digit transaction reference
+    utr_match = re.search(r'\b(?:utr|ref|rrn|upi\s*ref|txn\s*id)?[:\s#]*([0-9]{12})\b', text, re.IGNORECASE)
+    if not utr_match:
+        utr_match = re.search(r'\b([0-9]{12})\b', text)
+    utr = utr_match.group(1).strip() if utr_match else ""
+
+    # Incident Date
+    date_match = re.search(r'\b(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})\b', text)
+    if not date_match:
+        date_match = re.search(r'\b(\d{1,2}\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+\d{2,4})\b', text, re.IGNORECASE)
+    incident_date = date_match.group(1).strip() if date_match else ""
+
+    # Payment App / Channel
+    app_match = re.search(r'\b(PhonePe|Google\s*Pay|GPay|Paytm|BHIM|Cred|Amazon\s*Pay|SBI\s*YONO|HDFC|ICICI|Axis|Kotak)\b', text, re.IGNORECASE)
+    payment_app = app_match.group(1).strip() if app_match else ""
+
+    import legal_retriever
+    detected_cat = legal_retriever.detect_category(text)
+
+    return {
+        "amount": amount,
+        "utr": utr,
+        "incident_date": incident_date,
+        "payment_app": payment_app,
+        "sender_or_victim": "",
+        "recipient_or_accused": "",
+        "detected_category": detected_cat,
+        "summary": ""
+    }
+
+def build_auto_fill_prompt(entities: dict, extracted_text: str = "", language: str = "English") -> str:
+    is_hi = language.lower().startswith("hi")
+    summary = entities.get("summary", "").strip()
+    if summary:
+        return summary
+
+    amount = entities.get("amount", "").strip()
+    utr = entities.get("utr", "").strip()
+    date_val = entities.get("incident_date", "").strip()
+    app_val = entities.get("payment_app", "").strip()
+    cat = entities.get("detected_category", "cyber_fraud")
+
+    parts = []
+    if is_hi:
+        if amount:
+            parts.append(f"₹{amount} की राशि")
+        if app_val:
+            parts.append(f"{app_val} के माध्यम से")
+        if utr:
+            parts.append(f"यूटीआर {utr} के साथ")
+        if date_val:
+            parts.append(f"दिनांक {date_val} को")
+
+        if cat == "cyber_fraud":
+            return (" ".join(parts) + " अनाधिकृत रूप से कट गई है। कृपया तुरंत कानूनी प्रक्रिया एवं 1930 हेल्पलाइन पर शिकायत दर्ज करने का मार्गदर्शन दें।").strip()
+        elif cat == "consumer_complaint":
+            return (" ".join(parts) + " का भुगतान करने पर भी खराब सामान मिला और रिफंड नहीं दिया गया। उपभोक्ता फोरम में शिकायत हेतु मार्गदर्शन दें।").strip()
+        elif cat == "workplace_salary_issue":
+            return (" ".join(parts) + " का बकाया वेतन कंपनी द्वारा नहीं दिया गया है। लेबर कमिश्नर के समक्ष शिकायत हेतु सहायता चाहिए।").strip()
+        elif cat == "tenancy_dispute":
+            return (" ".join(parts) + " का सिक्योरिटी डिपॉजिट मकान मालिक वापस नहीं कर रहा है। रेंट अथॉरिटी के पास शिकायत दर्ज करनी है।").strip()
+        else:
+            return (" ".join(parts) + " से संबंधित मामले में सूचना का अधिकार (RTI) के तहत जानकारी चाहिए।").strip()
+    else:
+        if amount:
+            parts.append(f"₹{amount}")
+        if app_val:
+            parts.append(f"via {app_val}")
+        if utr:
+            parts.append(f"with UTR Ref: {utr}")
+        if date_val:
+            parts.append(f"on {date_val}")
+
+        if cat == "cyber_fraud":
+            return ("Unauthorized deduction of " + " ".join(parts) + ". Money was debited without my consent after receiving a link. Please guide on filing under 1930 and BNS 2023.").strip()
+        elif cat == "consumer_complaint":
+            return ("Paid " + " ".join(parts) + " for a product/service, but received defective goods and merchant refused refund. Need guidance for e-Daakhil / NCH.").strip()
+        elif cat == "workplace_salary_issue":
+            return ("Pending salary/dues of " + " ".join(parts) + " withheld by employer. Need procedure for Samadhan portal and Labour Commissioner.").strip()
+        elif cat == "tenancy_dispute":
+            return ("Security deposit of " + " ".join(parts) + " illegally withheld by landlord after vacating. Need guidance under Model Tenancy Act.").strip()
+        else:
+            return ("Seeking official records regarding payment of " + " ".join(parts) + " under RTI Act 2005.").strip()
+
+def parse_document_or_receipt(file_bytes: bytes = b"", filename: str = "", mime_type: str = "", text_context: str = "", language: str = "English") -> dict:
+    """
+    Unified multi-tiered OCR & receipt parser for NyayaMitra AI:
+    - Tier 1: Cloud Vision OCR via Gemini 1.5 Flash (highest accuracy for UPI apps/receipts)
+    - Tier 2: Cloud Vision OCR via OpenAI GPT-4o-mini
+    - Tier 3: Local Pytesseract OCR (if installed)
+    - Tier 4: Text stream & Pillow image metadata fallback with intelligent guidance
+    """
+    raw_text = (text_context or "").strip()
+    note = ""
+    ocr_engine = "Text Entity Parser"
+    entities = {}
+
+    gemini_key = os.getenv("GEMINI_API_KEY") or os.getenv("AI_API_KEY")
+    openai_key = os.getenv("OPENAI_API_KEY")
+
+    ext = os.path.splitext(filename)[1].lower() if filename else ""
+
+    # Check if a text file was uploaded
+    if file_bytes and ext in [".txt", ".csv", ".log", ".json"]:
+        try:
+            file_text = file_bytes.decode("utf-8", errors="ignore")
+            raw_text = (raw_text + "\n" + file_text).strip()
+            ocr_engine = "Plaintext Log Parser"
+        except Exception:
+            pass
+
+    # Check if an image file was uploaded
+    is_image = False
+    img_format = ""
+    img_size = ()
+    if file_bytes and ext not in [".txt", ".csv", ".log", ".json"]:
+        try:
+            with Image.open(io.BytesIO(file_bytes)) as pil_img:
+                img_format = pil_img.format or "Image"
+                img_size = pil_img.size
+                is_image = True
+        except Exception:
+            is_image = False
+
+    if is_image:
+        mime_map = {
+            ".png": "image/png",
+            ".jpg": "image/jpeg",
+            ".jpeg": "image/jpeg",
+            ".webp": "image/webp",
+            ".bmp": "image/bmp",
+            ".gif": "image/gif"
+        }
+        effective_mime = mime_type if mime_type and "/" in mime_type else mime_map.get(ext, "image/jpeg")
+
+        # Tier 1: Gemini Vision
+        if gemini_key:
+            try:
+                vision_result = query_gemini_vision(gemini_key, file_bytes, effective_mime)
+                if isinstance(vision_result, dict) and (vision_result.get("extracted_text") or vision_result.get("amount") or vision_result.get("utr")):
+                    entities = {
+                        "amount": str(vision_result.get("amount", "") or ""),
+                        "utr": str(vision_result.get("utr", "") or ""),
+                        "incident_date": str(vision_result.get("incident_date", "") or ""),
+                        "payment_app": str(vision_result.get("payment_app", "") or ""),
+                        "sender_or_victim": str(vision_result.get("sender_or_victim", "") or ""),
+                        "recipient_or_accused": str(vision_result.get("recipient_or_accused", "") or ""),
+                        "detected_category": str(vision_result.get("detected_category", "cyber_fraud")),
+                        "summary": str(vision_result.get("summary", "") or "")
+                    }
+                    raw_text = str(vision_result.get("extracted_text", "") or raw_text)
+                    ocr_engine = "Gemini 1.5 Flash Vision"
+            except Exception as e:
+                print(f"Gemini Vision call failed, trying next tier: {e}")
+
+        # Tier 2: OpenAI Vision
+        if not entities and openai_key:
+            try:
+                vision_result = query_openai_vision(openai_key, file_bytes, effective_mime)
+                if isinstance(vision_result, dict) and (vision_result.get("extracted_text") or vision_result.get("amount") or vision_result.get("utr")):
+                    entities = {
+                        "amount": str(vision_result.get("amount", "") or ""),
+                        "utr": str(vision_result.get("utr", "") or ""),
+                        "incident_date": str(vision_result.get("incident_date", "") or ""),
+                        "payment_app": str(vision_result.get("payment_app", "") or ""),
+                        "sender_or_victim": str(vision_result.get("sender_or_victim", "") or ""),
+                        "recipient_or_accused": str(vision_result.get("recipient_or_accused", "") or ""),
+                        "detected_category": str(vision_result.get("detected_category", "cyber_fraud")),
+                        "summary": str(vision_result.get("summary", "") or "")
+                    }
+                    raw_text = str(vision_result.get("extracted_text", "") or raw_text)
+                    ocr_engine = "GPT-4o Mini Vision"
+            except Exception as e:
+                print(f"OpenAI Vision call failed, trying next tier: {e}")
+
+        # Tier 3: Local Pytesseract (if available)
+        if not entities:
+            try:
+                import pytesseract
+                with Image.open(io.BytesIO(file_bytes)) as pil_img:
+                    tess_text = pytesseract.image_to_string(pil_img)
+                    if tess_text.strip():
+                        raw_text = tess_text.strip()
+                        entities = extract_entities_from_text(raw_text)
+                        ocr_engine = "Tesseract Local OCR"
+            except Exception:
+                pass
+
+        # Tier 4: Image Metadata Fallback
+        if not entities:
+            combined = f"{filename} {raw_text}".strip()
+            entities = extract_entities_from_text(combined)
+            ocr_engine = "Pillow Image Inspector"
+            note = (
+                f"Uploaded image: {img_format} ({img_size[0]}x{img_size[1]}). "
+                "Automated AI Vision OCR is active when GEMINI_API_KEY is configured in .env. "
+                "You can also paste the transaction SMS or receipt text directly below."
+            )
+    elif file_bytes and not is_image:
+        combined = f"{filename} {raw_text}".strip()
+        entities = extract_entities_from_text(combined)
+        note = (
+            "Uploaded file received. For automated OCR entity extraction, "
+            "upload a valid PNG/JPEG receipt image or paste transaction details."
+        )
+    else:
+        # Pure text analysis
+        entities = extract_entities_from_text(raw_text)
+
+    # Ensure detected_category is always populated
+    if not entities.get("detected_category"):
+        import legal_retriever
+        entities["detected_category"] = legal_retriever.detect_category(raw_text or filename)
+
+    auto_prompt = build_auto_fill_prompt(entities, raw_text, language)
+
+    payload = {
+        "status": "success",
+        "ocr_engine": ocr_engine,
+        "extracted_text": raw_text[:800] if len(raw_text) > 800 else raw_text,
+        "entities": entities,
+        "auto_fill_prompt": auto_prompt
+    }
+    if note:
+        payload["note"] = note
+    return payload
 

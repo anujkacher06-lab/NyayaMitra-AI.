@@ -8,7 +8,7 @@ services:
     ports:
       - "5000:5000"
     environment:
-      - SECRET_KEY=nyayamitra-production-secret-key-2026
+      - SECRET_KEY=${SECRET_KEY:-change-this-to-a-secure-random-secret-in-production}
       - FLASK_ENV=production
       - GEMINI_API_KEY=${GEMINI_API_KEY:-}
       - OPENAI_API_KEY=${OPENAI_API_KEY:-}

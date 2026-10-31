@@ -210,5 +210,164 @@ class TestNyayaMitraAI(unittest.TestCase):
         resp_empty = self.client.post("/follow-up", json={"question": "   "})
         self.assertEqual(resp_empty.status_code, 400)
 
+    def test_14_cache_user_isolation(self):
+        # User A makes a query
+        resp_a = self.client.post("/ask", json={
+            "question": "Electricity bill scam SMS deducted funds",
+            "category": "cyber_fraud",
+            "language": "English",
+            "user_name": "Aarav Sharma",
+            "state": "Maharashtra"
+        })
+        self.assertEqual(resp_a.status_code, 200)
+        data_a = resp_a.get_json()
+        self.assertEqual(data_a["user_name"], "Aarav Sharma")
+        self.assertEqual(data_a["state"], "Maharashtra")
+        qid_a = data_a["query_id"]
+
+        # User B makes identical query with different name and state (hits cache)
+        resp_b = self.client.post("/ask", json={
+            "question": "Electricity bill scam SMS deducted funds",
+            "category": "cyber_fraud",
+            "language": "English",
+            "user_name": "Bhavna Patel",
+            "state": "Gujarat"
+        })
+        self.assertEqual(resp_b.status_code, 200)
+        data_b = resp_b.get_json()
+        self.assertTrue(data_b.get("from_cache"))
+        self.assertEqual(data_b["user_name"], "Bhavna Patel")
+        self.assertEqual(data_b["state"], "Gujarat")
+        qid_b = data_b["query_id"]
+        self.assertNotEqual(qid_a, qid_b, "Distinct query records must be created for each user")
+
+        # Verify raw cached response in DB does not leak user names
+        cached_raw = database.get_cached_response("cyber_fraud", "Electricity bill scam SMS deducted funds", "English")
+        self.assertNotIn("user_name", cached_raw, "Cache must not store citizen identity")
+        self.assertNotIn("state", cached_raw, "Cache must not store citizen state")
+
+    def test_15_robust_error_handling_and_non_numeric_ids(self):
+        # Non-numeric query_id in follow-up should not crash with 500
+        resp_fu = self.client.post("/follow-up", json={
+            "query_id": "invalid-non-numeric-id",
+            "question": "How long will this process take?"
+        })
+        self.assertEqual(resp_fu.status_code, 200)
+        self.assertIn("answer", resp_fu.get_json())
+
+        # Non-numeric query_id in print-draft should not crash
+        resp_pd = self.client.get("/print-draft?query_id=invalid_id")
+        self.assertEqual(resp_pd.status_code, 200)
+
+        # Non-numeric query_id in feedback should return clean 400 error without exception trace
+        resp_fb = self.client.post("/feedback", json={
+            "query_id": "not_an_int",
+            "rating": 5
+        })
+        self.assertEqual(resp_fb.status_code, 400)
+        fb_json = resp_fb.get_json()
+        self.assertEqual(fb_json["status"], "error")
+        self.assertNotIn("Traceback", fb_json["message"])
+
+    def test_16_scan_document_entity_extraction(self):
+        # Text input parsing
+        receipt_text = "Paid ₹14,500 via UPI. UTR Ref No: 412345678901 on 15/07/2026 for damaged electronics."
+        resp = self.client.post("/scan-document", json={"text": receipt_text})
+        self.assertEqual(resp.status_code, 200)
+        data = resp.get_json()
+        self.assertEqual(data["status"], "success")
+        entities = data["entities"]
+        self.assertEqual(entities["amount"], "14,500")
+        self.assertEqual(entities["utr"], "412345678901")
+        self.assertEqual(entities["incident_date"], "15/07/2026")
+        self.assertIn(entities["detected_category"], ["cyber_fraud", "consumer_complaint"])
+
+        # Binary/image upload notice
+        import io
+        fake_image = (io.BytesIO(b"fake image data"), "screenshot.png")
+        resp_img = self.client.post(
+            "/scan-document",
+            data={"file": fake_image},
+            content_type="multipart/form-data"
+        )
+        self.assertEqual(resp_img.status_code, 200)
+        img_data = resp_img.get_json()
+        self.assertEqual(img_data["status"], "success")
+        self.assertIn("note", img_data)
+
+    def test_17_ocr_vision_and_image_pipeline(self):
+        import io
+        from unittest.mock import patch
+        from PIL import Image
+
+        # 1. Real PIL image upload (fallback / Pillow Image Inspector)
+        img_buf = io.BytesIO()
+        test_img = Image.new("RGB", (320, 240), color="white")
+        test_img.save(img_buf, format="PNG")
+        img_buf.seek(0)
+
+        resp = self.client.post(
+            "/scan-document",
+            data={
+                "file": (img_buf, "payment_slip.png"),
+                "text": "Sent money ₹20,000 to fake landlord UTR: 555666777888 on 20/08/2026",
+                "language": "English"
+            },
+            content_type="multipart/form-data"
+        )
+        self.assertEqual(resp.status_code, 200)
+        data = resp.get_json()
+        self.assertEqual(data["status"], "success")
+        self.assertIn("320x240", data.get("note", ""))
+        self.assertEqual(data["entities"]["amount"], "20,000")
+        self.assertEqual(data["entities"]["utr"], "555666777888")
+        self.assertEqual(data["entities"]["incident_date"], "20/08/2026")
+        self.assertTrue(len(data.get("auto_fill_prompt", "")) > 10)
+
+        # 2. Mock Gemini 1.5 Flash Vision OCR
+        mock_vision_data = {
+            "extracted_text": "PhonePe Successful. Paid ₹35,000 to ABC Real Estate. UTR: 998877665544. Date: 12/09/2026.",
+            "amount": "35,000",
+            "utr": "998877665544",
+            "incident_date": "12/09/2026",
+            "payment_app": "PhonePe",
+            "sender_or_victim": "Rahul Verma",
+            "recipient_or_accused": "ABC Real Estate",
+            "detected_category": "tenancy_dispute",
+            "summary": "Tenant paid security deposit of ₹35,000 via PhonePe on 12/09/2026 to ABC Real Estate with UTR 998877665544."
+        }
+        with patch("ai_service.query_gemini_vision", return_value=mock_vision_data):
+            with patch.dict("os.environ", {"GEMINI_API_KEY": "dummy_test_key"}):
+                img_buf2 = io.BytesIO()
+                test_img.save(img_buf2, format="PNG")
+                img_buf2.seek(0)
+
+                resp_v = self.client.post(
+                    "/scan-document",
+                    data={"file": (img_buf2, "receipt.png"), "language": "English"},
+                    content_type="multipart/form-data"
+                )
+                self.assertEqual(resp_v.status_code, 200)
+                v_data = resp_v.get_json()
+                self.assertEqual(v_data["status"], "success")
+                self.assertEqual(v_data["ocr_engine"], "Gemini 1.5 Flash Vision")
+                self.assertEqual(v_data["entities"]["amount"], "35,000")
+                self.assertEqual(v_data["entities"]["utr"], "998877665544")
+                self.assertEqual(v_data["entities"]["detected_category"], "tenancy_dispute")
+                self.assertIn("Tenant paid security deposit", v_data["auto_fill_prompt"])
+
+        # 3. Hindi auto-fill prompt generation
+        hi_entities = {
+            "amount": "5,000",
+            "utr": "123456789012",
+            "incident_date": "01/10/2026",
+            "payment_app": "Google Pay",
+            "detected_category": "cyber_fraud"
+        }
+        hi_prompt = ai_service.build_auto_fill_prompt(hi_entities, language="Hindi")
+        self.assertIn("₹5,000", hi_prompt)
+        self.assertIn("123456789012", hi_prompt)
+        self.assertIn("1930", hi_prompt)
+
 if __name__ == "__main__":
     unittest.main()

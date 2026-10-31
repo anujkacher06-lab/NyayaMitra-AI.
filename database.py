@@ -156,6 +156,10 @@ def get_cached_response(category: str, question: str, language: str):
         conn.close()
         try:
             data = json.loads(row["response_json"])
+            # Return sanitized legal analysis; strip any user-specific attributes
+            data.pop("user_name", None)
+            data.pop("state", None)
+            data.pop("query_id", None)
             data["from_cache"] = True
             return data
         except Exception:
@@ -167,8 +171,14 @@ def get_cached_response(category: str, question: str, language: str):
 def set_cached_response(category: str, question: str, language: str, response_data: dict):
     """
     Stores an AI legal response into the persistent SQLite cache.
+    Ensures user-specific details (name, state, query_id) are NOT stored in the shared cache.
     """
     key = compute_cache_key(category, question, language)
+    # Sanitize payload: cache only statutory legal synthesis, not user profile or state aid
+    clean_data = dict(response_data)
+    for user_key in ("user_name", "state", "state_aid", "query_id", "from_cache"):
+        clean_data.pop(user_key, None)
+
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute("""
@@ -177,7 +187,7 @@ def set_cached_response(category: str, question: str, language: str, response_da
         ON CONFLICT(cache_key) DO UPDATE SET
             response_json = excluded.response_json,
             updated_at = CURRENT_TIMESTAMP
-    """, (key, category, question, language, json.dumps(response_data, ensure_ascii=False)))
+    """, (key, category, question, language, json.dumps(clean_data, ensure_ascii=False)))
     conn.commit()
     conn.close()
 
@@ -208,14 +218,19 @@ def get_queries(limit: int = 50):
     conn.close()
     return rows
 
-def get_query_by_id(query_id: int):
+def get_query_by_id(query_id):
+    try:
+        qid = int(query_id)
+    except (ValueError, TypeError):
+        return None
+
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute("""
         SELECT id, category, question, language, response, created_at
         FROM legal_queries
         WHERE id = ?
-    """, (query_id,))
+    """, (qid,))
     row = cursor.fetchone()
     conn.close()
     return dict(row) if row else None

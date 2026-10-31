@@ -174,15 +174,34 @@
           </div>
 
           <div class="form-group">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
               <label class="form-label" for="problemInput" style="margin-bottom: 0;">
                 <span data-i18n="labelProblem">Describe What Happened</span>
               </label>
-              <button type="button" id="voiceBtn" class="voice-input-btn" onclick="toggleVoiceRecognition()" title="Speak in Hindi or English">
-                <span id="voiceIcon">🎙️</span>
-                <span id="voiceText" data-i18n="btnVoiceInput">Voice Input (बोलकर लिखें)</span>
-              </button>
+              <div class="input-tools-row">
+                <button type="button" id="scanReceiptBtn" class="scan-receipt-btn" onclick="document.getElementById('receiptFileInput').click()" title="Scan UPI transaction receipt, bank slip, or eviction letter">
+                  <span id="scanReceiptIcon">📷</span>
+                  <span id="scanReceiptText" data-i18n="btnScanReceipt">Scan Receipt / Screenshot</span>
+                </button>
+                <input type="file" id="receiptFileInput" accept="image/*,.pdf,.txt" style="display: none;" onchange="handleReceiptUpload(event)">
+                <button type="button" id="voiceBtn" class="voice-input-btn" onclick="toggleVoiceRecognition()" title="Speak in Hindi or English">
+                  <span id="voiceIcon">🎙️</span>
+                  <span id="voiceText" data-i18n="btnVoiceInput">Voice Input (बोलकर लिखें)</span>
+                </button>
+              </div>
             </div>
+
+            <!-- Receipt OCR Status and Preview Card -->
+            <div id="ocrPreviewCard" class="ocr-preview-card" style="display: none;">
+              <div class="ocr-preview-header">
+                <span class="ocr-badge" id="ocrBadgeText">⚡ OCR Analyzed</span>
+                <span class="ocr-engine-tag" id="ocrEngineTag"></span>
+                <button type="button" class="ocr-close-btn" onclick="clearOcrPreview()" title="Dismiss">✕</button>
+              </div>
+              <div class="ocr-entities-chips" id="ocrEntitiesChips"></div>
+              <div class="ocr-note-text" id="ocrNoteText" style="display: none;"></div>
+            </div>
+
             <textarea id="problemInput" name="problem_description" class="form-textarea" required
               placeholder="e.g., I received an SMS with a link claiming electricity bill overdue. After clicking it and entering UPI PIN, ₹15,000 was debited from my account."></textarea>
             

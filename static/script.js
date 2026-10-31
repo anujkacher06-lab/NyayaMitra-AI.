@@ -35,6 +35,10 @@ const i18n = {
     btnAnalyzing: "Analyzing Verified Laws & Portals...",
     btnVoiceInput: "Voice Input (बोलकर लिखें)",
     btnListening: "Listening... (सुन रहे हैं)",
+    btnScanReceipt: "Scan Receipt / Screenshot",
+    btnScanningReceipt: "Scanning Receipt OCR...",
+    ocrSuccessToast: "Receipt parsed successfully! Details auto-filled.",
+    ocrErrorToast: "Could not scan receipt. Please enter details below.",
     draftHeading: "Generate Official Complaint Draft",
     btnCopy: "Copy Draft",
     btnCopied: "Copied to Clipboard!",
@@ -76,6 +80,10 @@ const i18n = {
     btnAnalyzing: "सत्यापित कानूनों की जांच हो रही है...",
     btnVoiceInput: "बोलकर लिखें (Voice Input)",
     btnListening: "सुन रहे हैं... (Listening)",
+    btnScanReceipt: "रसीद स्कैन करें (OCR)",
+    btnScanningReceipt: "रसीद स्कैन हो रही है...",
+    ocrSuccessToast: "रसीद सफलता से स्कैन की गई! विवरण अपने-आप भर गया है।",
+    ocrErrorToast: "रसीद स्कैन नहीं हो सकी। कृपया विवरण नीचे लिखें।",
     draftHeading: "औपचारिक शिकायत प्रारूप तैयार करें",
     btnCopy: "प्रारूप कॉपी करें",
     btnCopied: "कॉपी कर लिया गया!",
@@ -181,6 +189,118 @@ function fillSamplePrompt(type) {
     }
   }
   problemInput.focus();
+}
+
+// Receipt & Document OCR Scanning
+async function handleReceiptUpload(event) {
+  const fileInput = event.target;
+  if (!fileInput.files || fileInput.files.length === 0) return;
+  const file = fileInput.files[0];
+
+  const scanBtn = document.getElementById("scanReceiptBtn");
+  const scanText = document.getElementById("scanReceiptText");
+  const origText = scanText ? scanText.textContent : "Scan Receipt";
+
+  if (scanBtn) scanBtn.classList.add("scanning");
+  if (scanText) scanText.textContent = i18n[currentLang]?.btnScanningReceipt || "Scanning Receipt OCR...";
+  showToast(currentLang === "hi" ? "रसीद स्कैन की जा रही है..." : "Scanning receipt & extracting transaction entities...");
+
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("language", currentLang === "hi" ? "Hindi" : "English");
+
+  try {
+    const res = await fetch("/scan-document", {
+      method: "POST",
+      body: formData
+    });
+    const data = await res.json();
+
+    if (data.status === "success") {
+      const entities = data.entities || {};
+      const problemInput = document.getElementById("problemInput");
+
+      // Auto-fill prompt if returned or synthesize from entities
+      if (data.auto_fill_prompt && problemInput) {
+        problemInput.value = data.auto_fill_prompt;
+      } else if (data.extracted_text && problemInput) {
+        problemInput.value = data.extracted_text;
+      }
+
+      // Automatically select detected category
+      if (entities.detected_category) {
+        selectCategory(entities.detected_category);
+        const displayCat = document.getElementById("displayCategory");
+        if (displayCat) {
+          const catMap = {
+            "cyber_fraud": "Cyber & Financial Fraud",
+            "consumer_complaint": "Consumer Complaints",
+            "workplace_salary_issue": "Workplace & Salary Issues",
+            "tenancy_dispute": "Tenancy & Rent Disputes",
+            "rti_assistance": "RTI (Right to Information)"
+          };
+          displayCat.value = catMap[entities.detected_category] || entities.detected_category;
+        }
+      }
+
+      // Render OCR preview card
+      renderOcrPreview(data);
+      showToast(i18n[currentLang]?.ocrSuccessToast || "Receipt parsed successfully!");
+    } else {
+      showToast(data.message || (i18n[currentLang]?.ocrErrorToast || "Could not parse receipt."));
+    }
+  } catch (err) {
+    console.error("OCR Scan error:", err);
+    showToast(i18n[currentLang]?.ocrErrorToast || "Could not connect to OCR scanner.");
+  } finally {
+    if (scanBtn) scanBtn.classList.remove("scanning");
+    if (scanText) scanText.textContent = origText;
+    fileInput.value = "";
+  }
+}
+
+function renderOcrPreview(data) {
+  const card = document.getElementById("ocrPreviewCard");
+  const chipsContainer = document.getElementById("ocrEntitiesChips");
+  const engineTag = document.getElementById("ocrEngineTag");
+  const noteText = document.getElementById("ocrNoteText");
+  if (!card || !chipsContainer) return;
+
+  chipsContainer.innerHTML = "";
+  if (engineTag) engineTag.textContent = data.ocr_engine || "Vision OCR";
+
+  const entities = data.entities || {};
+  const chips = [];
+
+  if (entities.amount) chips.push(`💰 ₹${entities.amount}`);
+  if (entities.utr) chips.push(`🔢 UTR: ${entities.utr}`);
+  if (entities.payment_app) chips.push(`📱 ${entities.payment_app}`);
+  if (entities.incident_date) chips.push(`📅 ${entities.incident_date}`);
+  if (entities.detected_category) {
+    const catLabel = entities.detected_category.replace(/_/g, " ").toUpperCase();
+    chips.push(`🏷️ ${catLabel}`);
+  }
+
+  chips.forEach(chipText => {
+    const chip = document.createElement("span");
+    chip.className = "ocr-chip";
+    chip.textContent = chipText;
+    chipsContainer.appendChild(chip);
+  });
+
+  if (data.note && noteText) {
+    noteText.textContent = data.note;
+    noteText.style.display = "block";
+  } else if (noteText) {
+    noteText.style.display = "none";
+  }
+
+  card.style.display = "block";
+}
+
+function clearOcrPreview() {
+  const card = document.getElementById("ocrPreviewCard");
+  if (card) card.style.display = "none";
 }
 
 // Voice Input via Web Speech API
