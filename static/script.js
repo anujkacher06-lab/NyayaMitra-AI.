@@ -126,12 +126,61 @@ function setLanguage(lang) {
   if (problemInput && t.placeholderProblem) {
     problemInput.placeholder = t.placeholderProblem;
   }
+
+  // Update theme button text
+  const themeText = document.getElementById("themeText");
+  const currentTheme = document.documentElement.getAttribute("data-theme") || "dark";
+  if (themeText) {
+    if (currentTheme === "light") {
+      themeText.textContent = lang === "hi" ? "मिडनाइट" : "Midnight";
+    } else {
+      themeText.textContent = lang === "hi" ? "कोर्ट रूम" : "Courtroom";
+    }
+  }
 }
 
 function toggleLanguage() {
   const nextLang = currentLang === "en" ? "hi" : "en";
   setLanguage(nextLang);
 }
+
+// Courtroom Theme Controller (Midnight Onyx <-> Courtroom Parchment)
+function initTheme() {
+  const savedTheme = localStorage.getItem("nyayamitra-theme") || "dark";
+  applyTheme(savedTheme, false);
+}
+
+function applyTheme(theme, notify = true) {
+  document.documentElement.setAttribute("data-theme", theme);
+  localStorage.setItem("nyayamitra-theme", theme);
+
+  const themeIcon = document.getElementById("themeIcon");
+  const themeText = document.getElementById("themeText");
+  if (themeIcon && themeText) {
+    if (theme === "light") {
+      themeIcon.textContent = "🌙";
+      themeText.textContent = currentLang === "hi" ? "मिडनाइट" : "Midnight";
+    } else {
+      themeIcon.textContent = "🏛️";
+      themeText.textContent = currentLang === "hi" ? "कोर्ट रूम" : "Courtroom";
+    }
+  }
+  if (notify && typeof showToast === "function") {
+    showToast(theme === "light"
+      ? (currentLang === "hi" ? "कोर्ट रूम थीम सक्रिय" : "Courtroom Parchment Theme")
+      : (currentLang === "hi" ? "मिडनाइट थीम सक्रिय" : "Judicial Midnight Theme")
+    );
+  }
+}
+
+function toggleTheme() {
+  const current = document.documentElement.getAttribute("data-theme") || "dark";
+  const next = current === "light" ? "dark" : "light";
+  applyTheme(next, true);
+}
+
+// Immediately initialize theme on script evaluation
+initTheme();
 
 // Category selection
 function selectCategory(cat) {

@@ -7,7 +7,7 @@
   <meta name="description" content="AI-powered legal information assistant explaining Indian laws in plain language, providing evidence checklists, verified official portals, and complaint draft templates.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
@@ -19,11 +19,15 @@
         <div class="brand-emblem">⚖️</div>
         <div class="brand-text">
           <h1>NyayaMitra AI</h1>
-          <p>न्यायमित्र • Legal Information Assistant</p>
+          <p>न्यायमित्र • National Citizen Legal Aid Portal</p>
         </div>
       </a>
 
       <div class="nav-actions">
+        <button id="themeToggleBtn" class="theme-switch-btn" onclick="toggleTheme()" title="Switch Courtroom Theme / थीम बदलें">
+          <span id="themeIcon">🏛️</span>
+          <span id="themeText">Courtroom</span>
+        </button>
         <button id="langToggleBtn" class="lang-switch-btn" onclick="toggleLanguage()">
           🇮🇳 हिंदी में देखें
         </button>

@@ -6,7 +6,7 @@
   <title>NyayaMitra AI | Query History & Records</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
@@ -18,11 +18,15 @@
         <div class="brand-emblem">⚖️</div>
         <div class="brand-text">
           <h1>NyayaMitra AI</h1>
-          <p>न्यायमित्र • Legal Information Assistant</p>
+          <p>न्यायमित्र • National Citizen Legal Aid Portal</p>
         </div>
       </a>
 
       <div class="nav-actions">
+        <button id="themeToggleBtn" class="theme-switch-btn" onclick="toggleTheme()" title="Switch Courtroom Theme / थीम बदलें">
+          <span id="themeIcon">🏛️</span>
+          <span id="themeText">Courtroom</span>
+        </button>
         <a href="/" class="btn-secondary">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <line x1="12" y1="5" x2="12" y2="19"></line>
