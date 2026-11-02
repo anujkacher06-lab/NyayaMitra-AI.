@@ -135,7 +135,7 @@ def generate_fallback_response(category: str, question: str, verified_ctx: dict,
 
 def query_gemini_api(api_key: str, system_prompt: str, user_content: str) -> str:
     # Use Gemini REST API with header-based authentication to avoid logging API keys in URLs
-    url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
+    candidate_models = ["gemini-3.5-flash", "gemini-flash-latest", "gemini-2.5-flash", "gemini-1.5-flash"]
     payload = {
         "contents": [
             {
@@ -154,13 +154,21 @@ def query_gemini_api(api_key: str, system_prompt: str, user_content: str) -> str
         "Content-Type": "application/json",
         "x-goog-api-key": api_key
     }
-    resp = requests.post(url, json=payload, headers=headers, timeout=12)
-    if resp.status_code == 200:
-        data = resp.json()
-        candidates = data.get("candidates", [])
-        if candidates:
-            return candidates[0]["content"]["parts"][0]["text"]
-    raise Exception(f"Gemini API returned status {resp.status_code}")
+    last_err = None
+    for model in candidate_models:
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
+        try:
+            resp = requests.post(url, json=payload, headers=headers, timeout=22)
+            if resp.status_code == 200:
+                data = resp.json()
+                candidates = data.get("candidates", [])
+                if candidates:
+                    return candidates[0]["content"]["parts"][0]["text"]
+            last_err = f"Status {resp.status_code}: {resp.text[:150]}"
+        except Exception as e:
+            last_err = str(e)
+            continue
+    raise Exception(f"Gemini API returned error: {last_err}")
 
 def query_openai_api(api_key: str, system_prompt: str, user_content: str) -> str:
     url = "https://api.openai.com/v1/chat/completions"
@@ -381,9 +389,9 @@ Return ONLY a valid JSON object matching this schema:
 
 def query_gemini_vision(api_key: str, image_bytes: bytes, mime_type: str, prompt: str = VISION_OCR_PROMPT) -> dict:
     """
-    Multimodal Gemini 1.5 Flash Vision OCR for receipts and legal documents.
+    Multimodal Gemini Vision OCR for receipts and legal documents.
     """
-    url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
+    candidate_models = ["gemini-3.5-flash", "gemini-flash-latest", "gemini-2.5-flash", "gemini-1.5-flash"]
     b64_img = base64.b64encode(image_bytes).decode("utf-8")
     payload = {
         "contents": [
@@ -409,14 +417,22 @@ def query_gemini_vision(api_key: str, image_bytes: bytes, mime_type: str, prompt
         "Content-Type": "application/json",
         "x-goog-api-key": api_key
     }
-    resp = requests.post(url, json=payload, headers=headers, timeout=15)
-    if resp.status_code == 200:
-        data = resp.json()
-        candidates = data.get("candidates", [])
-        if candidates:
-            raw_text = candidates[0]["content"]["parts"][0]["text"]
-            return json.loads(raw_text)
-    raise Exception(f"Gemini Vision API returned status {resp.status_code}")
+    last_err = None
+    for model in candidate_models:
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
+        try:
+            resp = requests.post(url, json=payload, headers=headers, timeout=22)
+            if resp.status_code == 200:
+                data = resp.json()
+                candidates = data.get("candidates", [])
+                if candidates:
+                    raw_text = candidates[0]["content"]["parts"][0]["text"]
+                    return json.loads(raw_text)
+            last_err = f"Status {resp.status_code}: {resp.text[:150]}"
+        except Exception as e:
+            last_err = str(e)
+            continue
+    raise Exception(f"Gemini Vision API returned error: {last_err}")
 
 def query_openai_vision(api_key: str, image_bytes: bytes, mime_type: str, prompt: str = VISION_OCR_PROMPT) -> dict:
     """
