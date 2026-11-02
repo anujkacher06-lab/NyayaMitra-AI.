@@ -327,6 +327,12 @@
           <span>Download Court-Ready PDF</span>
         </a>
         {% endif %}
+        <button type="button" class="btn-whatsapp" onclick="openWhatsAppNoticeModal()" title="Format and send a statutory legal demand notice directly to opposite party via WhatsApp">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.225 8.225 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.196 8.196 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24m4.52 11.66c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.06-.39-2.02-1.24-.74-.66-1.24-1.48-1.39-1.73-.14-.25-.02-.39.11-.51.11-.11.25-.29.37-.43.13-.15.17-.25.25-.42.08-.17.04-.32-.02-.45-.06-.13-.56-1.35-.77-1.85-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.13.17 1.77 2.7 4.29 3.79.6.26 1.07.41 1.43.53.6.19 1.15.16 1.58.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.06-.11-.23-.17-.48-.3z"/>
+          </svg>
+          <span>Send Notice via WhatsApp</span>
+        </button>
         <button class="btn-secondary" onclick="downloadDraft()">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -476,6 +482,71 @@
         <button type="button" class="btn-secondary" onclick="closeDraftModal()">Cancel</button>
         <button type="button" class="btn-primary" style="width: auto;" onclick="generateDraftAjax('{{ result.category_id }}', '{{ result.language }}')">
           Update Draft Template
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- WhatsApp Legal Demand Notice Modal -->
+  <div id="whatsappNoticeModalOverlay" class="modal-overlay" onclick="if(event.target===this) closeWhatsAppNoticeModal()">
+    <div class="modal-content" style="max-width: 680px; border-top: 4px solid #25d366;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem;">
+        <div>
+          <h3 style="color: #25d366; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem; font-size: 1.3rem;">
+            <span>💬</span> <span>Dispatch Legal Notice via WhatsApp</span>
+          </h3>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">
+            Legally admissible statutory demand notice under Section 63 of Bharatiya Sakshya Adhiniyam (BSA), 2023.
+          </p>
+        </div>
+        <button type="button" class="btn-secondary" style="padding: 0.35rem 0.65rem; font-size: 0.85rem;" onclick="closeWhatsAppNoticeModal()">✕</button>
+      </div>
+
+      <div class="form-grid-row" style="margin-bottom: 1rem;">
+        <div class="form-group">
+          <label class="form-label">Recipient (Opposite Party)</label>
+          <input type="text" id="waRecipientName" class="form-input" placeholder="e.g. Landlord / Employer / Merchant Name" oninput="updateWhatsAppPreview()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Recipient WhatsApp Number (Optional)</label>
+          <input type="tel" id="waRecipientPhone" class="form-input" placeholder="e.g. 9876543210 (leave empty for contact picker)">
+        </div>
+      </div>
+
+      <div class="form-grid-row" style="margin-bottom: 1rem;">
+        <div class="form-group">
+          <label class="form-label">Cure Period / Compliance Deadline</label>
+          <select id="waCureDays" class="form-select" onchange="updateWhatsAppPreview()">
+            <option value="7 Days">7 Days (Standard Statutory Notice)</option>
+            <option value="3 Days">3 Days (Urgent / Salary & Eviction)</option>
+            <option value="15 Days">15 Days (Formal Dispute Settlement)</option>
+            <option value="24 Hours">24 Hours (Immediate Cyber/Bank Freeze)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Disputed Claim / Amount (Optional)</label>
+          <input type="text" id="waClaimAmount" class="form-input" placeholder="e.g. ₹25,000" oninput="updateWhatsAppPreview()">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" style="display: flex; justify-content: space-between;">
+          <span>WhatsApp Notice Text (Live Editable)</span>
+          <span style="font-size: 0.75rem; color: var(--accent-gold);">Formatted with WhatsApp *bold* tags</span>
+        </label>
+        <textarea id="waMessagePreview" class="draft-editor-box" rows="11" style="font-family: inherit; font-size: 0.9rem; line-height: 1.5;"></textarea>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.25rem; flex-wrap: wrap;">
+        <button type="button" class="btn-secondary" onclick="closeWhatsAppNoticeModal()">Cancel</button>
+        <button type="button" class="btn-gold" onclick="copyWhatsAppNotice()">
+          📋 Copy Text
+        </button>
+        <button type="button" class="btn-whatsapp" onclick="dispatchWhatsAppNotice()" style="padding: 0.65rem 1.25rem;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.225 8.225 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.196 8.196 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24m4.52 11.66c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.06-.39-2.02-1.24-.74-.66-1.24-1.48-1.39-1.73-.14-.25-.02-.39.11-.51.11-.11.25-.29.37-.43.13-.15.17-.25.25-.42.08-.17.04-.32-.02-.45-.06-.13-.56-1.35-.77-1.85-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.13.17 1.77 2.7 4.29 3.79.6.26 1.07.41 1.43.53.6.19 1.15.16 1.58.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.06-.11-.23-.17-.48-.3z"/>
+          </svg>
+          <span>Open & Send via WhatsApp</span>
         </button>
       </div>
     </div>

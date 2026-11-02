@@ -183,6 +183,21 @@ def format_telegram_response(res: dict) -> str:
             lines.append(f"  • *{r.get('name')}*{contact}")
         lines.append("")
 
+    # 1-Click WhatsApp Legal Notice Link
+    import urllib.parse
+    wa_summary = explanation[:120].strip() if explanation else "unresolved civic legal grievance"
+    wa_notice = (
+        f"🚨 *FORMAL STATUTORY LEGAL DEMAND NOTICE* 🚨\n"
+        f"Subject: Notice of Demand regarding *{category}*\n\n"
+        f"Take formal notice that you are hereby called upon to redress this grievance: \"{wa_summary}...\" "
+        f"within 7 days. Failing compliance, formal proceedings will be initiated before the Consumer Commission / Police Cyber Cell under BNS 2023.\n\n"
+        f"Preserved under Section 63 BSA 2023.\n"
+        f"_Dispatched via NyayaMitra AI_"
+    )
+    wa_url = f"https://api.whatsapp.com/send?text={urllib.parse.quote(wa_notice)}"
+    lines.append(f"💬 [📲 Send Formal Notice via WhatsApp]({wa_url})")
+    lines.append("")
+
     lines.append("⚠️ *Disclaimer:*")
     lines.append(disclaimer[:250] + ("..." if len(disclaimer) > 250 else ""))
     lines.append("\n_Need free lawyer aid? Dial NALSA Helpline 15100 or Tele-Law 14488._")

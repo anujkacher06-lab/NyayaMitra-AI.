@@ -410,5 +410,20 @@ class TestNyayaMitraAI(unittest.TestCase):
         self.assertIn("1915", msg)
         self.assertIn("Disclaimer", msg)
 
+    def test_20_whatsapp_notice_formatting(self):
+        """Test WhatsApp legal notice URL generation in Telegram bot."""
+        import telegram_bot
+        mock_res = {
+            "category": "Tenancy Disputes",
+            "explanation": "Landlord refusing to refund deposit of 140000.",
+            "actions": ["Send statutory demand notice under Model Tenancy Act"],
+            "official_resources": [{"name": "Rent Authority", "contact": "State SLSA"}],
+            "disclaimer": "Safety legal disclaimer"
+        }
+        msg = telegram_bot.format_telegram_response(mock_res)
+        self.assertIn("Send Formal Notice via WhatsApp", msg)
+        self.assertIn("https://api.whatsapp.com/send?text=", msg)
+        self.assertIn("Section%2063%20BSA%202023", msg)
+
 if __name__ == "__main__":
     unittest.main()

@@ -1111,4 +1111,119 @@ function switchStateAid(selectedState) {
     .catch(err => console.error("Error fetching state aid:", err));
 }
 
+// -------------------------------------------------------------
+// 1-Click WhatsApp Statutory Legal Demand Notice Dispatcher
+// -------------------------------------------------------------
+function openWhatsAppNoticeModal() {
+  const modal = document.getElementById("whatsappNoticeModalOverlay");
+  if (!modal) return;
+  modal.classList.add("open");
+
+  // Pre-fill amount if found in current draft
+  const draftText = document.getElementById("complaintDraftText")?.value || "";
+  const amountMatch = draftText.match(/(?:Rs\.?|₹|INR)\s*([0-9,]+)/i);
+  const amountInput = document.getElementById("waClaimAmount");
+  if (amountInput && !amountInput.value && amountMatch) {
+    amountInput.value = `₹${amountMatch[1]}`;
+  }
+
+  updateWhatsAppPreview();
+}
+
+function closeWhatsAppNoticeModal() {
+  const modal = document.getElementById("whatsappNoticeModalOverlay");
+  if (modal) modal.classList.remove("open");
+}
+
+function updateWhatsAppPreview() {
+  const recipient = document.getElementById("waRecipientName")?.value.trim() || "[Opposite Party / Landlord / Employer / Merchant]";
+  const cureDays = document.getElementById("waCureDays")?.value || "7 Days";
+  const claimAmount = document.getElementById("waClaimAmount")?.value.trim() || "[Disputed Amount]";
+  const categoryElem = document.querySelector(".category-tag-badge strong");
+  const categoryTitle = categoryElem ? categoryElem.innerText.trim() : "Civic Legal Dispute";
+
+  const today = new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
+  const draftText = document.getElementById("complaintDraftText")?.value || "";
+
+  // Summary snippet from draft or fallback
+  let summarySnippet = "";
+  const lines = draftText.split("\n").filter(l => l.trim().length > 15);
+  for (let l of lines) {
+    if (!l.startsWith("To,") && !l.startsWith("From:") && !l.startsWith("Subject:") && !l.startsWith("Date:")) {
+      summarySnippet = l.trim().substring(0, 160);
+      break;
+    }
+  }
+  if (!summarySnippet) {
+    summarySnippet = `Regarding the pending grievance and outstanding claim of ${claimAmount} which remains unresolved despite prior requests.`;
+  }
+
+  const noticeMessage = 
+`🚨 *FORMAL STATUTORY LEGAL DEMAND NOTICE* 🚨
+*Date:* ${today}
+*To:* ${recipient}
+*Subject:* Formal Legal Demand Notice regarding *${categoryTitle}*
+
+Sir / Madam,
+
+Take formal notice that you have failed / refused to redress the following grievance:
+"${summarySnippet}"
+
+⚡ *MANDATORY STATUTORY DEMAND:*
+You are hereby formally called upon to resolve this grievance and disburse / refund the rightful amount of *${claimAmount}* within *${cureDays}* of receipt of this notice.
+
+⚠️ *NOTICE OF LEGAL CONSEQUENCES:*
+Should you fail to comply within the stipulated *${cureDays}*, formal legal proceedings will be immediately initiated against you before:
+• National Consumer Commission (e-Daakhil Portal) / Jurisdictional Police Wing
+• District Legal Services Authority (DLSA) under Legal Services Authorities Act
+• Applicable provisions of the *Bharatiya Nyaya Sanhita (BNS), 2023* and relevant civic statutes.
+All litigation expenses, interest, and legal costs will be claimed at your sole liability.
+
+📌 *ELECTRONIC EVIDENCE CERTIFICATION:*
+This WhatsApp communication is recorded, timestamped, and preserved as admissible electronic evidence under *Section 63 of Bharatiya Sakshya Adhiniyam (BSA), 2023*.
+
+_Dispatched via NyayaMitra AI Legal Redressal Assistant_`;
+
+  const previewBox = document.getElementById("waMessagePreview");
+  if (previewBox) {
+    previewBox.value = noticeMessage;
+  }
+}
+
+function copyWhatsAppNotice() {
+  const previewBox = document.getElementById("waMessagePreview");
+  if (!previewBox || !previewBox.value) return;
+  navigator.clipboard.writeText(previewBox.value).then(() => {
+    showToast("WhatsApp notice copied to clipboard!");
+  }).catch(() => {
+    previewBox.select();
+    document.execCommand("copy");
+    showToast("WhatsApp notice copied!");
+  });
+}
+
+function dispatchWhatsAppNotice() {
+  const previewBox = document.getElementById("waMessagePreview");
+  if (!previewBox || !previewBox.value.trim()) {
+    showToast("Notice message is empty.");
+    return;
+  }
+
+  const rawPhone = document.getElementById("waRecipientPhone")?.value.replace(/[^0-9]/g, "") || "";
+  const encodedText = encodeURIComponent(previewBox.value.trim());
+
+  let waUrl = "";
+  if (rawPhone.length >= 10) {
+    // If 10 digits without country code, add 91 (India)
+    const formattedPhone = rawPhone.length === 10 ? `91${rawPhone}` : rawPhone;
+    waUrl = `https://wa.me/${formattedPhone}?text=${encodedText}`;
+  } else {
+    // Open WhatsApp app/web contact picker
+    waUrl = `https://api.whatsapp.com/send?text=${encodedText}`;
+  }
+
+  window.open(waUrl, "_blank");
+  showToast("Opening WhatsApp with pre-filled legal notice...");
+}
+
 
