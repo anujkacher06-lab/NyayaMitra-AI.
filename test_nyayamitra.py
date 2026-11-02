@@ -369,5 +369,46 @@ class TestNyayaMitraAI(unittest.TestCase):
         self.assertIn("123456789012", hi_prompt)
         self.assertIn("1930", hi_prompt)
 
+    def test_18_pdf_generator_and_export_route(self):
+        """Test server-side formal petition PDF generation and /export-pdf route."""
+        import pdf_generator
+        pdf_bytes = pdf_generator.generate_petition_pdf(
+            category_title="Cyber & Financial Fraud",
+            draft_text="To,\nThe Inspector of Police,\nCyber Crime Cell...\n\nPrayer: Kindly register FIR and freeze beneficiary account.",
+            user_name="Anuj Sharma",
+            state="Delhi",
+            laws=["Bharatiya Nyaya Sanhita, 2023 (Sec 318(4))", "Information Technology Act, 2000 (Sec 66D)"],
+            evidence=["Bank Statement showing debit", "Transaction UTR acknowledgment screenshot"],
+            resources=[{"name": "National Cyber Helpline", "contact": "1930"}]
+        )
+        self.assertIsInstance(pdf_bytes, bytes)
+        self.assertTrue(pdf_bytes.startswith(b"%PDF"), "Output must be a valid PDF starting with %PDF")
+        self.assertGreater(len(pdf_bytes), 1000)
+
+        # Test Flask /export-pdf route
+        resp = self.client.get("/export-pdf?draft_text=Official+Legal+Notice&category=cyber_fraud")
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.headers.get("Content-Type"), "application/pdf")
+        self.assertTrue(resp.data.startswith(b"%PDF"))
+
+    def test_19_telegram_bot_formatting(self):
+        """Test Telegram bot response formatting and structure."""
+        import telegram_bot
+        mock_res = {
+            "category": "Consumer Complaints",
+            "explanation": "You received a defective smartphone and merchant refused refund.",
+            "actions": ["Issue legal notice", "File complaint on NCH 1915", "Approach e-Daakhil"],
+            "evidence": ["Purchase invoice", "Unboxing video"],
+            "applicable_laws": ["Consumer Protection Act, 2019"],
+            "official_resources": [{"name": "National Consumer Helpline", "contact": "1915"}],
+            "disclaimer": "This is general civic legal information, not professional legal advice."
+        }
+        msg = telegram_bot.format_telegram_response(mock_res)
+        self.assertIn("NyayaMitra Legal Guidance", msg)
+        self.assertIn("Consumer Complaints", msg)
+        self.assertIn("Consumer Protection Act, 2019", msg)
+        self.assertIn("1915", msg)
+        self.assertIn("Disclaimer", msg)
+
 if __name__ == "__main__":
     unittest.main()

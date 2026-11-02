@@ -165,9 +165,16 @@
     <div style="font-size: 0.88rem; color: #475569;">
       <strong>NyayaMitra Official Draft</strong> • Ready for Print / PDF Export
     </div>
-    <button onclick="window.print()" class="btn btn-primary">
-      🖨️ Print / Save as PDF
-    </button>
+    <div style="display: flex; gap: 0.5rem;">
+      {% if query_id %}
+      <a href="/export-pdf?query_id={{ query_id }}" class="btn btn-primary" style="background: #b45309; text-decoration: none;">
+        📥 Download PDF
+      </a>
+      {% endif %}
+      <button onclick="window.print()" class="btn btn-primary">
+        🖨️ Print / Save as PDF
+      </button>
+    </div>
   </div>
 
   <div class="a4-sheet">

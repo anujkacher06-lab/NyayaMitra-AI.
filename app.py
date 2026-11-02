@@ -1,11 +1,14 @@
 import os
+import io
+import re
 import json
-from flask import Flask, render_template, request, jsonify, redirect, url_for, flash, Response
+from flask import Flask, render_template, request, jsonify, redirect, url_for, flash, Response, send_file
 from dotenv import load_dotenv
 
 import database
 import legal_retriever
 import ai_service
+import pdf_generator
 
 load_dotenv()
 
@@ -224,6 +227,63 @@ def print_draft():
         draft_content = "No draft content available. Please generate a draft first."
 
     return render_template("print_draft.html", draft_content=draft_content, query_id=query_id)
+
+@app.route("/export-pdf", methods=["GET", "POST"])
+def export_pdf():
+    """
+    Generates and downloads a court-ready, formal A4 PDF legal petition
+    with judicial styling, statutory citations, evidence checklist, and verification block.
+    """
+    draft_text = ""
+    category = "Civic Legal Dispute"
+    user_name = ""
+    state = ""
+    laws = []
+    evidence = []
+    resources = []
+    language = "English"
+
+    query_id = request.args.get("query_id") or request.form.get("query_id")
+    if query_id:
+        record = database.get_query_by_id(query_id)
+        if record:
+            category = record.get("category", category)
+            user_name = record.get("user_name", "")
+            state = record.get("state", "")
+            language = record.get("language", "English")
+            ctx = legal_retriever.get_verified_context(category, language)
+            laws = ctx.get("applicable_laws", [])
+            evidence = ctx.get("evidence", [])
+            resources = ctx.get("resources", [])
+            draft_text = legal_retriever.generate_local_complaint_draft(
+                category, language, {"name": user_name, "state": state, "description": record.get("question", "")}
+            )
+
+    if not draft_text:
+        draft_text = request.form.get("draft_text") or request.args.get("draft_text") or ""
+    if not draft_text:
+        draft_text = "Official Legal Notice / Complaint Draft\n\nSubmitted by Complainant under verified statutory provisions."
+
+    pdf_bytes = pdf_generator.generate_petition_pdf(
+        category_title=category,
+        draft_text=draft_text,
+        user_name=user_name,
+        state=state,
+        laws=laws,
+        evidence=evidence,
+        resources=resources,
+        language=language
+    )
+
+    clean_cat = re.sub(r'[^a-zA-Z0-9_-]', '_', category)
+    filename = f"NyayaMitra_Formal_Petition_{clean_cat}.pdf"
+
+    return send_file(
+        io.BytesIO(pdf_bytes),
+        mimetype="application/pdf",
+        as_attachment=True,
+        download_name=filename
+    )
 
 @app.route("/api/all-states", methods=["GET"])
 def api_all_states():
