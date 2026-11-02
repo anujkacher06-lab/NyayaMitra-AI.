@@ -153,9 +153,13 @@
               <label class="form-label" for="languageSelect">
                 <span>Preferred Language / भाषा</span>
               </label>
-              <select id="languageSelect" name="language" class="form-select" onchange="setLanguage(this.value === 'Hindi' ? 'hi' : 'en')">
+              <select id="languageSelect" name="language" class="form-select" onchange="onLanguageSelectChange(this.value)">
                 <option value="English">English</option>
                 <option value="Hindi">हिंदी (Hindi)</option>
+                <option value="Tamil">தமிழ் (Tamil)</option>
+                <option value="Telugu">తెలుగు (Telugu)</option>
+                <option value="Bengali">বাংলা (Bengali)</option>
+                <option value="Marathi">मराठी (Marathi)</option>
               </select>
             </div>
           </div>

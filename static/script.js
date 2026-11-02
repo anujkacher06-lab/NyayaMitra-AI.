@@ -90,12 +90,219 @@ const i18n = {
     btnDownload: "डाउनलोड करें (.txt)",
     btnPrint: "प्रिंट करें / PDF",
     checklistProgress: "तैयार साक्ष्य दस्तावेज:"
+  },
+  ta: {
+    heroBadge: "அரசு சரிபார்க்கப்பட்ட சட்ட தகவல் உதவியாளர்",
+    heroTitlePrefix: "ஒவ்வொரு இந்திய குடிமகனுக்கும் ",
+    heroTitleGradient: "சட்ட வழிகாட்டுதல்",
+    heroSubtitle: "உடனடி, எளிய நடைமுறை விளக்கங்கள், அதிகாரப்பூர்வ ஹெல்ப்லைன்கள், சான்று பட்டியல்கள் மற்றும் புகார் வரைவுகளைப் பெறுங்கள்.",
+    emergencyBanner: "உடனடி நிதி சைபர் மோசடி உதவி எண்:",
+    categoryHeading: "உங்கள் சட்ட பிரச்சனை வகையைத் தேர்ந்தெடுக்கவும்",
+    catCyberTitle: "சைபர் & நிதி மோசடி",
+    catCyberDesc: "போலி UPI இணைப்புகள், OTP மோசடிகள், அங்கீகரிக்கப்படாத வங்கி பற்று, ஃபிஷிங் மற்றும் ஆள்மாறாட்டம்.",
+    catConsumerTitle: "நுகர்வோர் புகார்கள்",
+    catConsumerDesc: "குறைபாடுள்ள பொருட்கள், மறுக்கப்பட்ட பணத்திரும்பல், போலி தயாரிப்புகள் மற்றும் ஈ-காமர்ஸ் சேவை குறைபாடுகள்.",
+    catWorkplaceTitle: "பணியிட & சம்பள பிரச்சினைகள்",
+    catWorkplaceDesc: "செலுத்தப்படாத ஊதியங்கள், தாமதமான சம்பளங்கள், நிறுத்திவைக்கப்பட்ட PF/கிராஜுவிட்டி மற்றும் தவறான பணிநீக்கம்.",
+    catTenancyTitle: "வாடகை & குத்தகை சர்ச்சைகள்",
+    catTenancyDesc: "தடுத்துவைக்கப்பட்ட பாதுகாப்பு வைப்பு, சட்டவிரோத வெளியேற்றம், தன்னிச்சையான வாடகை உயர்வு.",
+    catRtiTitle: "RTI (தகவல் அறியும் உரிமை)",
+    catRtiDesc: "அரசு ஆவணங்கள் பெறுதல், நிலுவையில் உள்ள ஓய்வூதியம்/உதவித்தொகை நிலை மற்றும் பொது திட்ட தணிக்கை.",
+    formHeading: "உங்கள் சட்ட பிரச்சனையை விவரிக்கவும்",
+    labelCategory: "சட்ட வகை",
+    labelName: "உங்கள் முழு பெயர்",
+    labelState: "உங்கள் மாநிலம் / யூ.டி.",
+    labelProblem: "என்ன நடந்தது என்று விவரிக்கவும்",
+    optionalTag: "(விரும்பினால்)",
+    placeholderProblem: "எ.கா., மின்சார பில் அதிகமாக உள்ளது என்று SMS வந்தது. UPI PIN உள்ளிட்டதும் ₹15,000 பற்று வைக்கப்பட்டது.",
+    samplePromptsLabel: "விரைவு டெமோக்களை முயற்சிக்கவும்:",
+    sampleCyber: "போலி UPI இணைப்பை கிளிக் செய்த பிறகு ₹15,000 பற்று",
+    sampleConsumer: "சேதமடைந்த போன் டெலிவரிக்கு Flipkart பணத்திரும்பல் மறுத்தது",
+    sampleSalary: "கடந்த 2 மாத சம்பளம் & F&F செலுத்தப்படவில்லை",
+    sampleTenancy: "வீடு காலி செய்த பிறகு ₹1,40,000 வைப்பு திரும்பப் பெற மறுப்பு",
+    sampleRti: "நிலுவையில் உள்ள உதவித்தொகை நிலைக்கு RTI தாக்கல் செய்யவும்",
+    btnAnalyze: "பகுப்பாய்வு செய்து சட்ட வழிகாட்டுதல் பெறவும்",
+    btnAnalyzing: "சரிபார்க்கப்பட்ட சட்டங்களை ஆய்வு செய்கிறோம்...",
+    btnVoiceInput: "குரல் உள்ளீடு",
+    btnListening: "கேட்கிறோம்...",
+    btnScanReceipt: "ரசீதை / ஸ்கிரீன்ஷாட்டை ஸ்கேன் செய்யவும்",
+    btnScanningReceipt: "OCR ஸ்கேன் செய்கிறோம்...",
+    ocrSuccessToast: "ரசீது வெற்றிகரமாக பகுப்பாய்வு செய்யப்பட்டது!",
+    ocrErrorToast: "ரசீதை ஸ்கேன் செய்ய முடியவில்லை. கீழே விவரங்களை உள்ளிடவும்.",
+    draftHeading: "அதிகாரப்பூர்வ புகார் வரைவை உருவாக்கவும்",
+    btnCopy: "வரைவை நகலெடுக்கவும்",
+    btnCopied: "கிளிப்போர்டில் நகலெடுக்கப்பட்டது!",
+    btnDownload: "வரைவை பதிவிறக்கவும் (.txt)",
+    btnPrint: "அச்சிடு / PDF சேமி",
+    checklistProgress: "தயாரிக்கப்பட்ட ஆவணங்கள்:"
+  },
+  te: {
+    heroBadge: "ప్రభుత్వం ధృవీకరించిన న్యాయ సమాచార సహాయకుడు",
+    heroTitlePrefix: "ప్రతి భారతీయ పౌరుడికీ ",
+    heroTitleGradient: "న్యాయ మార్గదర్శకత్వం",
+    heroSubtitle: "తక్షణ, సరళమైన విధాన వివరణలు, అధికారిక హెల్ప్‌లైన్‌లు, సాక్ష్యం చెక్‌లిస్ట్‌లు మరియు రెడీమేడ్ ఫిర్యాదు ముసాయిదాలు పొందండి.",
+    emergencyBanner: "తక్షణ ఆర్థిక సైబర్ మోసం హెల్ప్‌లైన్:",
+    categoryHeading: "మీ చట్టపరమైన సమస్య వర్గాన్ని ఎంచుకోండి",
+    catCyberTitle: "సైబర్ & ఆర్థిక మోసం",
+    catCyberDesc: "నకిలీ UPI లింకులు, OTP స్కామ్‌లు, అనధికార బ్యాంక్ డెబిట్లు, ఫిషింగ్ మరియు వేషం.",
+    catConsumerTitle: "వినియోగదారు ఫిర్యాదులు",
+    catConsumerDesc: "లోపభూయిష్ట వస్తువులు, తిరస్కరించిన రీఫండ్లు, నకిలీ ఉత్పత్తులు మరియు ఈ-కామర్స్ సేవా లోపాలు.",
+    catWorkplaceTitle: "కార్యాలయ & వేతన సమస్యలు",
+    catWorkplaceDesc: "చెల్లించని వేతనాలు, ఆలస్యమైన జీతాలు, నిలిపివేసిన PF/గ్రాచ్యుటీ మరియు తప్పుడు తొలగింపు.",
+    catTenancyTitle: "అద్దె & కౌలు వివాదాలు",
+    catTenancyDesc: "నిలిపివేసిన భద్రతా డిపాజిట్, చట్టవిరుద్ధమైన తొలగింపు నోటీసు, అనియంత్రిత అద్దె పెంపు.",
+    catRtiTitle: "RTI (సమాచార హక్కు)",
+    catRtiDesc: "ప్రభుత్వ రికార్డులు పొందడం, పెండింగ్ పెన్షన్/స్కాలర్‌షిప్ స్థితి మరియు ప్రజా ప్రాజెక్ట్ ఆడిట్.",
+    formHeading: "మీ చట్టపరమైన సమస్యను వివరించండి",
+    labelCategory: "చట్ట వర్గం",
+    labelName: "మీ పూర్తి పేరు",
+    labelState: "మీ రాష్ట్రం / యూ.టి.",
+    labelProblem: "ఏం జరిగిందో వివరించండి",
+    optionalTag: "(ఐచ్ఛికం)",
+    placeholderProblem: "ఉదా., విద్యుత్ బిల్లు బకాయి ఉందని SMS వచ్చింది. UPI PIN నమోదు చేసిన తర్వాత ₹15,000 డెబిట్ అయింది.",
+    samplePromptsLabel: "త్వరిత డెమోలు ప్రయత్నించండి:",
+    sampleCyber: "నకిలీ UPI లింక్ క్లిక్ చేసిన తర్వాత ₹15,000 డెబిట్",
+    sampleConsumer: "దెబ్బతిన్న ఫోన్ డెలివరీకి Flipkart రీఫండ్ నిరాకరించింది",
+    sampleSalary: "చివరి 2 నెలల జీతం & F&F చెల్లించలేదు",
+    sampleTenancy: "ఖాళీ చేసిన తర్వాత ₹1,40,000 డిపాజిట్ వాపసు నిరాకరణ",
+    sampleRti: "పెండింగ్ స్కాలర్‌షిప్ స్థితికి RTI దాఖలు",
+    btnAnalyze: "విశ్లేషించి న్యాయ మార్గదర్శకత్వం పొందండి",
+    btnAnalyzing: "ధృవీకరించిన చట్టాలను విశ్లేషిస్తున్నాం...",
+    btnVoiceInput: "వాయిస్ ఇన్‌పుట్",
+    btnListening: "వింటున్నాం...",
+    btnScanReceipt: "రసీదు / స్క్రీన్‌షాట్ స్కాన్ చేయండి",
+    btnScanningReceipt: "OCR స్కాన్ చేస్తున్నాం...",
+    ocrSuccessToast: "రసీదు విజయవంతంగా విశ్లేషించబడింది!",
+    ocrErrorToast: "రసీదు స్కాన్ చేయడం సాధ్యపడలేదు. దయచేసి దిగువ వివరాలు నమోదు చేయండి.",
+    draftHeading: "అధికారిక ఫిర్యాదు ముసాయిదా రూపొందించండి",
+    btnCopy: "ముసాయిదా కాపీ చేయండి",
+    btnCopied: "క్లిప్‌బోర్డ్‌కి కాపీ అయింది!",
+    btnDownload: "ముసాయిదా డౌన్‌లోడ్ చేయండి (.txt)",
+    btnPrint: "ముద్రించు / PDF సేవ్",
+    checklistProgress: "సిద్ధమైన పత్రాలు:"
+  },
+  bn: {
+    heroBadge: "সরকার যাচাইকৃত আইনি তথ্য সহকারী",
+    heroTitlePrefix: "প্রতিটি ভারতীয় নাগরিকের জন্য ",
+    heroTitleGradient: "আইনি দিকনির্দেশনা",
+    heroSubtitle: "তাৎক্ষণিক, সহজ পদ্ধতিগত ব্যাখ্যা, অফিসিয়াল হেল্পলাইন, প্রমাণ চেকলিস্ট এবং রেডিমেড অভিযোগ খসড়া পান।",
+    emergencyBanner: "তাৎক্ষণিক আর্থিক সাইবার প্রতারণা হেল্পলাইন:",
+    categoryHeading: "আপনার আইনি সমস্যার বিভাগ বেছে নিন",
+    catCyberTitle: "সাইবার ও আর্থিক প্রতারণা",
+    catCyberDesc: "জাল UPI লিঙ্ক, OTP স্ক্যাম, অননুমোদিত ব্যাঙ্ক ডেবিট, ফিশিং এবং ছদ্মবেশ।",
+    catConsumerTitle: "ভোক্তা অভিযোগ",
+    catConsumerDesc: "ত্রুটিপূর্ণ পণ্য, প্রত্যাখ্যাত রিফান্ড, নকল পণ্য এবং ই-কমার্স সেবার অপূর্ণতা।",
+    catWorkplaceTitle: "কর্মক্ষেত্র ও বেতন সমস্যা",
+    catWorkplaceDesc: "অপরিশোধিত মজুরি, বিলম্বিত বেতন, আটকানো PF/গ্র্যাচুইটি এবং অন্যায় বরখাস্ত।",
+    catTenancyTitle: "ভাড়া ও লিজ বিরোধ",
+    catTenancyDesc: "আটকানো নিরাপত্তা আমানত, বেআইনি উচ্ছেদ নোটিশ, স্বেচ্ছাচারী ভাড়া বৃদ্ধি।",
+    catRtiTitle: "RTI (তথ্যের অধিকার)",
+    catRtiDesc: "সরকারি নথি প্রাপ্তি, মুলতুবি পেনশন/বৃত্তির অবস্থা এবং সরকারি প্রকল্পের নিরীক্ষা।",
+    formHeading: "আপনার আইনি সমস্যা বর্ণনা করুন",
+    labelCategory: "আইনি বিভাগ",
+    labelName: "আপনার পূর্ণ নাম",
+    labelState: "আপনার রাজ্য / ইউ.টি.",
+    labelProblem: "কী ঘটেছে তা বর্ণনা করুন",
+    optionalTag: "(ঐচ্ছিক)",
+    placeholderProblem: "যেমন, বিদ্যুৎ বিল বকেয়া বলে SMS এসেছিল। UPI PIN দেওয়ার পর ₹15,000 কেটে নেওয়া হয়েছে।",
+    samplePromptsLabel: "দ্রুত ডেমো চেষ্টা করুন:",
+    sampleCyber: "জাল UPI লিঙ্কে ক্লিক করার পর ₹15,000 ডেবিট",
+    sampleConsumer: "ক্ষতিগ্রস্ত ফোন ডেলিভারিতে Flipkart রিফান্ড প্রত্যাখ্যান করেছে",
+    sampleSalary: "শেষ ২ মাসের বেতন ও F&F দেওয়া হয়নি",
+    sampleTenancy: "বাসা ছাড়ার পর ₹1,40,000 ডিপোজিট ফেরত দিতে অস্বীকার",
+    sampleRti: "মুলতুবি বৃত্তির অবস্থার জন্য RTI দাখিল করুন",
+    btnAnalyze: "বিশ্লেষণ করুন ও আইনি দিকনির্দেশনা পান",
+    btnAnalyzing: "যাচাইকৃত আইন বিশ্লেষণ করা হচ্ছে...",
+    btnVoiceInput: "ভয়েস ইনপুট",
+    btnListening: "শুনছি...",
+    btnScanReceipt: "রসিদ / স্ক্রিনশট স্ক্যান করুন",
+    btnScanningReceipt: "OCR স্ক্যান করা হচ্ছে...",
+    ocrSuccessToast: "রসিদ সফলভাবে বিশ্লেষণ করা হয়েছে!",
+    ocrErrorToast: "রসিদ স্ক্যান করা সম্ভব হয়নি। নিচে বিবরণ দিন।",
+    draftHeading: "অফিসিয়াল অভিযোগ খসড়া তৈরি করুন",
+    btnCopy: "খসড়া কপি করুন",
+    btnCopied: "ক্লিপবোর্ডে কপি হয়েছে!",
+    btnDownload: "খসড়া ডাউনলোড করুন (.txt)",
+    btnPrint: "মুদ্রণ করুন / PDF সংরক্ষণ",
+    checklistProgress: "প্রস্তুত নথিপত্র:"
+  },
+  mr: {
+    heroBadge: "सरकार प्रमाणित कायदेशीर माहिती सहाय्यक",
+    heroTitlePrefix: "प्रत्येक भारतीय नागरिकासाठी ",
+    heroTitleGradient: "कायदेशीर मार्गदर्शन",
+    heroSubtitle: "त्वरित, सोप्या प्रक्रियात्मक स्पष्टीकरणे, अधिकृत हेल्पलाइन, पुरावा चेकलिस्ट आणि तयार तक्रार मसुदे मिळवा.",
+    emergencyBanner: "तत्काळ आर्थिक सायबर फसवणूक हेल्पलाइन:",
+    categoryHeading: "तुमच्या कायदेशीर समस्येची श्रेणी निवडा",
+    catCyberTitle: "सायबर व आर्थिक फसवणूक",
+    catCyberDesc: "बनावट UPI लिंक, OTP घोटाळे, अनधिकृत बँक डेबिट, फिशिंग आणि तोतयागिरी.",
+    catConsumerTitle: "ग्राहक तक्रारी",
+    catConsumerDesc: "सदोष वस्तू, नाकारलेला परतावा, बनावट उत्पादने आणि ई-कॉमर्स सेवेतील त्रुटी.",
+    catWorkplaceTitle: "कामाच्या ठिकाणी व पगाराच्या समस्या",
+    catWorkplaceDesc: "न दिलेले वेतन, विलंबित पगार, रोखलेले PF/ग्रॅच्युइटी आणि अन्यायकारक बडतर्फी.",
+    catTenancyTitle: "भाडेकरू व भाडे विवाद",
+    catTenancyDesc: "अडवलेली सुरक्षा ठेव, बेकायदेशीर बेदखल नोटीस, मनमानी भाडेवाढ.",
+    catRtiTitle: "RTI (माहितीचा अधिकार)",
+    catRtiDesc: "सरकारी नोंदी मिळवणे, प्रलंबित पेन्शन/शिष्यवृत्ती स्थिती आणि सार्वजनिक प्रकल्प लेखापरीक्षण.",
+    formHeading: "तुमची कायदेशीर समस्या सांगा",
+    labelCategory: "कायदेशीर श्रेणी",
+    labelName: "तुमचे पूर्ण नाव",
+    labelState: "तुमचे राज्य / केंद्रशासित प्रदेश",
+    labelProblem: "काय झाले ते सांगा",
+    optionalTag: "(पर्यायी)",
+    placeholderProblem: "उदा., वीज बिल थकीत असल्याचा SMS आला. UPI PIN टाकल्यावर ₹15,000 कापले गेले.",
+    samplePromptsLabel: "जलद डेमो वापरा:",
+    sampleCyber: "बनावट UPI लिंक क्लिक केल्यानंतर ₹15,000 डेबिट",
+    sampleConsumer: "खराब फोन डिलिव्हरीसाठी Flipkart ने परतावा नाकारला",
+    sampleSalary: "मागील 2 महिन्यांचा पगार व F&F दिला नाही",
+    sampleTenancy: "घर सोडल्यानंतर ₹1,40,000 ठेव परत करण्यास नकार",
+    sampleRti: "प्रलंबित शिष्यवृत्ती स्थितीसाठी RTI दाखल करा",
+    btnAnalyze: "विश्लेषण करा व कायदेशीर मार्गदर्शन मिळवा",
+    btnAnalyzing: "सत्यापित कायदे विश्लेषण केले जात आहेत...",
+    btnVoiceInput: "व्हॉइस इनपुट",
+    btnListening: "ऐकत आहोत...",
+    btnScanReceipt: "पावती / स्क्रीनशॉट स्कॅन करा",
+    btnScanningReceipt: "OCR स्कॅन होत आहे...",
+    ocrSuccessToast: "पावती यशस्वीरित्या विश्लेषित!",
+    ocrErrorToast: "पावती स्कॅन करणे शक्य झाले नाही. खाली तपशील भरा.",
+    draftHeading: "अधिकृत तक्रार मसुदा तयार करा",
+    btnCopy: "मसुदा कॉपी करा",
+    btnCopied: "क्लिपबोर्डवर कॉपी झाले!",
+    btnDownload: "मसुदा डाउनलोड करा (.txt)",
+    btnPrint: "मुद्रित करा / PDF जतन करा",
+    checklistProgress: "तयार कागदपत्रे:"
   }
 };
 
 let currentLang = "en";
 let speechRecognition = null;
 let isListening = false;
+
+// Map from dropdown value → i18n code
+const LANG_VALUE_MAP = {
+  "English": "en",
+  "Hindi": "hi",
+  "Tamil": "ta",
+  "Telugu": "te",
+  "Bengali": "bn",
+  "Marathi": "mr"
+};
+
+// Map from i18n code → dropdown value
+const LANG_CODE_TO_VALUE = {
+  "en": "English", "hi": "Hindi", "ta": "Tamil",
+  "te": "Telugu", "bn": "Bengali", "mr": "Marathi"
+};
+
+// Web Speech API language codes
+const VOICE_LANG_MAP = {
+  "en": "en-IN", "hi": "hi-IN", "ta": "ta-IN",
+  "te": "te-IN", "bn": "bn-IN", "mr": "mr-IN"
+};
+
+function onLanguageSelectChange(value) {
+  const code = LANG_VALUE_MAP[value] || "en";
+  setLanguage(code);
+}
 
 function setLanguage(lang) {
   currentLang = lang;
@@ -110,7 +317,7 @@ function setLanguage(lang) {
   // Update language select in form
   const langSelect = document.getElementById("languageSelect");
   if (langSelect) {
-    langSelect.value = lang === "en" ? "English" : "Hindi";
+    langSelect.value = LANG_CODE_TO_VALUE[lang] || "English";
   }
 
   // Update text nodes by data-i18n
@@ -136,6 +343,11 @@ function setLanguage(lang) {
     } else {
       themeText.textContent = lang === "hi" ? "कोर्ट रूम" : "Courtroom";
     }
+  }
+
+  // Update voice recognition language if active
+  if (speechRecognition) {
+    speechRecognition.lang = VOICE_LANG_MAP[lang] || "en-IN";
   }
 }
 
@@ -374,7 +586,7 @@ function toggleVoiceRecognition() {
   speechRecognition = new SpeechRecognition();
   speechRecognition.continuous = false;
   speechRecognition.interimResults = false;
-  speechRecognition.lang = currentLang === "hi" ? "hi-IN" : "en-IN";
+  speechRecognition.lang = VOICE_LANG_MAP[currentLang] || "en-IN";
 
   speechRecognition.onstart = () => {
     isListening = true;
@@ -745,9 +957,9 @@ function startSpeechReadout() {
   const utterance = new SpeechSynthesisUtterance(textToRead);
   utterance.rate = speechRate;
   utterance.pitch = 1.0;
-  utterance.lang = isHindi ? "hi-IN" : "en-IN";
+  utterance.lang = VOICE_LANG_MAP[currentLang] || "en-IN";
 
-  const voice = getOptimalVoice(isHindi ? "hi" : "en");
+  const voice = getOptimalVoice(currentLang);
   if (voice) utterance.voice = voice;
 
   utterance.onstart = () => {

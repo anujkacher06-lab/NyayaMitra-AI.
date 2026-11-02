@@ -64,9 +64,8 @@ def generate_fallback_response(category: str, question: str, verified_ctx: dict,
     Guarantees the system works seamlessly even without an external API key.
     """
     lang_code = verified_ctx.get("lang_code", "en")
-    is_hi = (lang_code == "hi")
 
-    if is_hi:
+    if lang_code == "hi":
         help_needed = (
             "यदि मामला ₹5,00,000 से अधिक की धोखाधड़ी का हो, या नियोक्ता/कंपनी द्वारा निरंतर उत्पीड़न "
             "अथवा धमकी दी जा रही हो, तो नालसा (NALSA) के निःशुल्क विधिक सेवा वकील या टेली-लॉ (Tele-Law) से तत्काल संपर्क करें।"
@@ -74,6 +73,42 @@ def generate_fallback_response(category: str, question: str, verified_ctx: dict,
         disclaimer = (
             "महत्वपूर्ण अस्वीकरण: यह केवल सामान्य कानूनी जानकारी और प्रक्रियात्मक मार्गदर्शन है, "
             "कोई पेशेवर कानूनी सलाह नहीं। किसी भी औपचारिक कानूनी कार्रवाई से पहले योग्य अधिवक्ता या विधिक सेवा प्राधिकरण से परामर्श करें।"
+        )
+    elif lang_code == "ta":
+        help_needed = (
+            "நிதி இழப்பு ₹5,00,000 க்கு மேல் இருந்தால் அல்லது சிக்கலான பல மாநில மோசடி, குற்றப் பயமுறுத்தல் இருந்தால், "
+            "NALSA / டெலி-லா (Tele-Law) மூலம் இலவச சட்ட உதவி பெறுங்கள்."
+        )
+        disclaimer = (
+            "முக்கியமான மறுப்பு: இது பொதுவான சட்டத் தகவல் மற்றும் செயல்முறை வழிகாட்டுதல் மட்டுமே, தொழில்முறை சட்ட ஆலோசனை அல்ல. "
+            "NyayaMitra எந்த சட்ட முடிவையும் உத்தரவாதம் அளிக்காது. சான்றிதழ் பெற்ற சட்ட ஆலோசகர் அல்லது DLSA உடன் சரிபார்க்கவும்."
+        )
+    elif lang_code == "te":
+        help_needed = (
+            "ఆర్థిక నష్టం ₹5,00,000 మించినట్లయితే లేదా సంక్లిష్టమైన బహుళ-అధికార పరిధి మోసం, నేరపరమైన బెదిరింపు ఉన్నట్లయితే, "
+            "NALSA / టెలీ-లా (Tele-Law) ద్వారా ఉచిత న్యాయ సహాయం పొందండి."
+        )
+        disclaimer = (
+            "ముఖ్యమైన నిరాకరణ: ఇది సాధారణ చట్టపరమైన సమాచారం మాత్రమే, వృత్తిపరమైన న్యాయ సలహా కాదు. "
+            "NyayaMitra ఏ న్యాయపరమైన ఫలితాన్నీ హామీ ఇవ్వదు. ధృవీకరించిన న్యాయ నిపుణుడు లేదా DLSA తో నిర్ధారించుకోండి."
+        )
+    elif lang_code == "bn":
+        help_needed = (
+            "আর্থিক ক্ষতি ₹5,00,000 ছাড়িয়ে গেলে বা জটিল বহু-এখতিয়ার প্রতারণা, অপরাধমূলক ভয় দেখানো হলে, "
+            "NALSA / টেলি-ল (Tele-Law) এর মাধ্যমে বিনামূল্যে আইনি সহায়তা নিন।"
+        )
+        disclaimer = (
+            "গুরুত্বপূর্ণ দাবিত্যাগ: এটি শুধুমাত্র সাধারণ আইনি তথ্য এবং পদ্ধতিগত নির্দেশিকা, পেশাদার আইনি পরামর্শ নয়। "
+            "NyayaMitra কোনো আইনি ফলাফলের গ্যারান্টি দেয় না। সার্টিফাইড আইনজীবী বা DLSA এর সাথে যোগাযোগ করুন।"
+        )
+    elif lang_code == "mr":
+        help_needed = (
+            "आर्थिक नुकसान ₹5,00,000 पेक्षा जास्त असल्यास किंवा गुंतागुंतीची बहु-क्षेत्राधिकार फसवणूक, गुन्हेगारी धमकी असल्यास, "
+            "NALSA / टेली-लॉ (Tele-Law) द्वारे मोफत कायदेशीर मदत मिळवा."
+        )
+        disclaimer = (
+            "महत्त्वाचा अस्वीकरण: ही केवळ सामान्य कायदेशीर माहिती व प्रक्रियात्मक मार्गदर्शन आहे, व्यावसायिक कायदेशीर सल्ला नाही. "
+            "NyayaMitra कोणत्याही कायदेशीर परिणामाची हमी देत नाही. प्रमाणित वकील किंवा DLSA कडे तपासणी करा."
         )
     else:
         help_needed = (
@@ -159,11 +194,16 @@ def generate_legal_response(category: str, question: str, verified_ctx: dict, la
     is_hi = (lang_code == "hi")
     system_prompt = SYSTEM_PROMPT_HI if is_hi else SYSTEM_PROMPT_EN
 
+    # Add explicit language instruction for non-English/Hindi languages so AI responds fully in that language
+    lang_instruction = ""
+    if lang_code not in ("en", "hi") and language.lower() not in ("english", "hindi"):
+        lang_instruction = f"\n\nIMPORTANT: Respond ENTIRELY in {language}. Do not mix any other language in your response."
+
     user_content = f"""
 USER QUESTION:
 "{question}"
 
-PREFERRED LANGUAGE: {language}
+PREFERRED LANGUAGE: {language}{lang_instruction}
 
 STRICT VERIFIED CONTEXT FROM INDIA CODE & NATIONAL PORTALS:
 Category: {verified_ctx.get('title')}
@@ -235,10 +275,13 @@ def generate_follow_up_answer(category: str, original_question: str, follow_up_q
     gemini_key = os.getenv("GEMINI_API_KEY") or os.getenv("AI_API_KEY")
     openai_key = os.getenv("OPENAI_API_KEY")
 
+    # For non-English/Hindi languages, instruct AI to respond in that language
+    lang_note = f" Respond ENTIRELY in {language}." if not is_hi and not language.lower().startswith("en") else ""
+
     system_prompt = (
         "You are NyayaMitra AI, an Indian legal information assistant. "
         "Answer the citizen's follow-up question concisely (max 3-4 bullet points), grounded in Indian law (BNS 2023, BNSS 2023, CPA 2019, RTI 2005). "
-        "Never invent laws or citation numbers. Always advise consulting DLSA/NALSA (15100) or Tele-Law (14488) for professional counsel."
+        f"Never invent laws or citation numbers. Always advise consulting DLSA/NALSA (15100) or Tele-Law (14488) for professional counsel.{lang_note}"
         if not is_hi else
         "आप न्यायमित्र (NyayaMitra AI) हैं। नागरिक के अनुवर्ती (follow-up) प्रश्न का संक्षिप्त और स्पष्ट उत्तर 3-4 बिंदुओं में दें। "
         "उत्तर भारतीय कानून (BNS 2023, BNSS 2023, CPA 2019, RTI 2005) पर आधारित होना चाहिए। "
@@ -249,7 +292,7 @@ def generate_follow_up_answer(category: str, original_question: str, follow_up_q
 Original Citizen Problem: {original_question}
 Follow-up Question: {follow_up_question}
 Verified Statutes: {json.dumps(verified_ctx.get('applicable_laws', []), ensure_ascii=False)}
-Language: {'Hindi' if is_hi else 'English'}
+Language: {language}
 """
 
     if gemini_key:

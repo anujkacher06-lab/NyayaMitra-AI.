@@ -124,7 +124,14 @@ def detect_category(question: str, user_selected: str = "") -> str:
     return "cyber_fraud"  # safe default
 
 def get_verified_context(category: str, language: str = "English") -> dict:
-    lang_code = "hi" if language.lower().startswith("hi") else "en"
+    # Map language name to code; data files only have "en" and "hi" keys,
+    # so all non-Hindi languages fall back to "en" for data retrieval;
+    # the AI layer then translates the output into the selected language.
+    _LANG_MAP = {
+        "hindi": "hi", "हिंदी": "hi",
+        "tamil": "en", "telugu": "en", "bengali": "en", "marathi": "en"
+    }
+    lang_code = _LANG_MAP.get(language.lower(), "hi" if language.lower().startswith("hi") else "en")
     raw = load_category_data(category)
 
     title = raw.get("title", {}).get(lang_code, raw.get("title", {}).get("en", category))
