@@ -95,6 +95,13 @@ def follow_up():
         data = request.get_json() if request.is_json else request.form
         query_id = data.get("query_id")
         follow_up_q = (data.get("question") or "").strip()
+        # Accept conversation history from frontend
+        chat_history = data.get("chat_history") or []
+        if isinstance(chat_history, str):
+            try:
+                chat_history = json.loads(chat_history)
+            except Exception:
+                chat_history = []
 
         if not follow_up_q:
             return jsonify({"status": "error", "message": "Please enter a follow-up question."}), 400
@@ -116,7 +123,8 @@ def follow_up():
             original_question=original_q,
             follow_up_question=follow_up_q,
             verified_ctx=verified_ctx,
-            language=language
+            language=language,
+            chat_history=chat_history
         )
 
         return jsonify({

@@ -374,40 +374,77 @@
       </p>
     </section>
 
-    <!-- Interactive Follow-Up Legal Chat -->
-    <section class="chat-container">
-      <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
-        <span>💬</span>
-        <span>Ask a Follow-Up Question / कानूनी सवाल पूछें</span>
-      </h3>
-      <p style="font-size: 0.84rem; color: var(--text-muted); margin-bottom: 1rem;">
-        Have doubts regarding police reporting, fees, time limits, or appeals? Ask below for instant grounded guidance:
-      </p>
+    <!-- Conversational Follow-Up Legal Chat -->
+    <section class="chat-container" id="nyayaChatSection">
+      <div class="chat-header-bar">
+        <div class="chat-header-left">
+          <div class="chat-avatar">⚖️</div>
+          <div>
+            <div class="chat-agent-name">NyayaMitra AI</div>
+            <div class="chat-agent-status" id="chatAgentStatus">● Online — Legal Assistant</div>
+          </div>
+        </div>
+        <div style="font-size: 0.75rem; color: var(--text-dim);">{{ result.category }}</div>
+      </div>
 
-      <div class="chat-suggestions">
+      <!-- Quick suggestion chips -->
+      <div class="chat-suggestions" id="chatSuggestions">
         <button type="button" class="chat-chip" onclick="askFollowUpChip('What if the police station refuses to register my FIR?')">
-          👮 What if police refuses FIR?
+          👮 Police refuses FIR?
         </button>
         <button type="button" class="chat-chip" onclick="askFollowUpChip('Is there any filing fee or court cost for this?')">
-          💰 Any filing fee or court cost?
+          💰 Any filing fee?
         </button>
-        <button type="button" class="chat-chip" onclick="askFollowUpChip('What is the time deadline or limitation period to take action?')">
-          ⏳ What is the time deadline?
+        <button type="button" class="chat-chip" onclick="askFollowUpChip('What is the time deadline to take action?')">
+          ⏳ Time deadline?
+        </button>
+        <button type="button" class="chat-chip" onclick="askFollowUpChip('Can I file the complaint online from home?')">
+          🌐 Can I file online?
+        </button>
+        <button type="button" class="chat-chip" onclick="askFollowUpChip('Can you tell me similar cases or examples?')">
+          📋 Similar cases?
         </button>
       </div>
 
+      <!-- Chat thread -->
       <div class="chat-thread" id="chatThread">
-        <div class="chat-bubble chat-bubble-ai">
-          Hello! I have analyzed your case regarding <strong>{{ result.category }}</strong>. Feel free to ask any specific procedural or statutory follow-up questions.
+        <div class="chat-row chat-row-ai">
+          <div class="chat-avatar-sm">⚖️</div>
+          <div>
+            <div class="chat-bubble chat-bubble-ai">
+              Namaste! 🙏 I've reviewed your <strong>{{ result.category }}</strong> case.<br><br>
+              Feel free to ask me anything — whether it's about next steps, deadlines, costs, or how to file. I'm here to help you understand your options clearly.
+            </div>
+            <div class="chat-timestamp">Just now</div>
+          </div>
         </div>
       </div>
 
-      <form id="followUpForm" onsubmit="submitFollowUp(event)" class="chat-input-row">
-        <input type="text" id="followUpInput" class="chat-input" placeholder="Type your follow-up legal question... (e.g. Can I file online?)" autocomplete="off">
-        <button type="submit" id="sendFollowUpBtn" class="btn-primary" style="width: auto; padding: 0.75rem 1.4rem;">
-          <span>Send</span>
-        </button>
-      </form>
+      <!-- Typing indicator (hidden by default) -->
+      <div class="chat-row chat-row-ai" id="typingIndicator" style="display:none; padding: 0.5rem 1rem;">
+        <div class="chat-avatar-sm">⚖️</div>
+        <div class="chat-bubble chat-bubble-ai typing-bubble">
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+        </div>
+      </div>
+
+      <!-- Input area -->
+      <div class="chat-input-area">
+        <form id="followUpForm" onsubmit="submitFollowUp(event)" class="chat-input-row">
+          <input type="text" id="followUpInput" class="chat-input"
+            placeholder="Ask anything about your case..." autocomplete="off" maxlength="500">
+          <button type="submit" id="sendFollowUpBtn" class="chat-send-btn" title="Send">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+            </svg>
+          </button>
+        </form>
+        <div style="font-size: 0.72rem; color: var(--text-dim); text-align: center; margin-top: 0.4rem;">
+          Responses are grounded in verified Indian law. For critical matters, consult <strong>NALSA 15100</strong>.
+        </div>
+      </div>
     </section>
 
     <!-- 8. Safety Disclaimer -->
@@ -567,14 +604,133 @@
   <script src="{{ url_for('static', filename='script.js') }}"></script>
   <script>
     window.currentQueryId = {{ result.query_id or '0' }};
-    // Initial fetch of template text for category
+    window.currentCategory = "{{ result.category_id or 'cyber_fraud' }}";
+    window.currentLanguage = "{{ result.language or 'English' }}";
+
+    // ── Conversational chat state ──────────────────────────────────────────
+    let chatHistory = [];   // [{role:"user"|"assistant", content:"..."}]
+
+    function getChatTimestamp() {
+      const now = new Date();
+      return now.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" });
+    }
+
+    function appendChatRow(role, text) {
+      const thread = document.getElementById("chatThread");
+      const isAI = role === "ai";
+
+      const row = document.createElement("div");
+      row.className = `chat-row ${isAI ? "chat-row-ai" : "chat-row-user"}`;
+
+      const bubbleHTML = `
+        ${isAI ? '<div class="chat-avatar-sm">⚖️</div>' : ""}
+        <div>
+          <div class="chat-bubble ${isAI ? "chat-bubble-ai" : "chat-bubble-user"}">${formatChatText(text)}</div>
+          <div class="chat-timestamp" style="text-align:${isAI ? "left" : "right"}">${getChatTimestamp()}</div>
+        </div>
+        ${!isAI ? '<div class="chat-avatar-sm chat-avatar-user">👤</div>' : ""}
+      `;
+      row.innerHTML = bubbleHTML;
+      thread.appendChild(row);
+      thread.scrollTo({ top: thread.scrollHeight, behavior: "smooth" });
+    }
+
+    function formatChatText(text) {
+      // Convert newlines to <br>, bold **text**, and keep plain text readable
+      return text
+        .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+        .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+        .replace(/\n\n/g, "<br><br>")
+        .replace(/\n(\d+)\.\s/g, "<br><strong>$1.</strong> ")
+        .replace(/\n•\s/g, "<br>• ")
+        .replace(/\n/g, "<br>");
+    }
+
+    function showTyping() {
+      const el = document.getElementById("typingIndicator");
+      if (el) {
+        el.style.display = "flex";
+        document.getElementById("chatThread").scrollTo({ top: document.getElementById("chatThread").scrollHeight, behavior: "smooth" });
+      }
+    }
+    function hideTyping() {
+      const el = document.getElementById("typingIndicator");
+      if (el) el.style.display = "none";
+    }
+
+    function setAgentStatus(status) {
+      const el = document.getElementById("chatAgentStatus");
+      if (el) el.textContent = status;
+    }
+
+    function hideSuggestions() {
+      const el = document.getElementById("chatSuggestions");
+      if (el) el.style.display = "none";
+    }
+
+    async function submitFollowUp(event) {
+      if (event) event.preventDefault();
+      const input = document.getElementById("followUpInput");
+      const sendBtn = document.getElementById("sendFollowUpBtn");
+      const question = (input?.value || "").trim();
+      if (!question) return;
+
+      // Render user message
+      appendChatRow("user", question);
+      chatHistory.push({ role: "user", content: question });
+      input.value = "";
+      input.disabled = true;
+      sendBtn.disabled = true;
+      hideSuggestions();
+      showTyping();
+      setAgentStatus("● Typing...");
+
+      try {
+        const resp = await fetch("/follow-up", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            query_id: window.currentQueryId,
+            question: question,
+            chat_history: chatHistory.slice(0, -1)  // send history excluding current question
+          })
+        });
+        const data = await resp.json();
+        hideTyping();
+
+        if (data.status === "success" && data.answer) {
+          appendChatRow("ai", data.answer);
+          chatHistory.push({ role: "assistant", content: data.answer });
+        } else {
+          appendChatRow("ai", data.message || "I'm sorry, I couldn't process that. Please try again.");
+        }
+      } catch (err) {
+        hideTyping();
+        appendChatRow("ai", "Connection error. Please check your internet and try again.");
+      } finally {
+        input.disabled = false;
+        sendBtn.disabled = false;
+        input.focus();
+        setAgentStatus("● Online — Legal Assistant");
+      }
+    }
+
+    function askFollowUpChip(question) {
+      const input = document.getElementById("followUpInput");
+      if (input) {
+        input.value = question;
+        submitFollowUp(null);
+      }
+    }
+
+    // ── Load complaint draft on page load ──────────────────────────────────
     document.addEventListener("DOMContentLoaded", () => {
       fetch("/generate-draft", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          category: "{{ result.category_id or 'cyber_fraud' }}",
-          language: "{{ result.language or 'English' }}",
+          category: window.currentCategory,
+          language: window.currentLanguage,
           user_name: "{{ result.user_name or '' }}"
         })
       })

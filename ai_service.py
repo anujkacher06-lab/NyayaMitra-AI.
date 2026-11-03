@@ -135,19 +135,23 @@ def generate_fallback_response(category: str, question: str, verified_ctx: dict,
 
 def query_gemini_api(api_key: str, system_prompt: str, user_content: str) -> str:
     # Use Gemini REST API with header-based authentication to avoid logging API keys in URLs
-    candidate_models = ["gemini-3.5-flash", "gemini-flash-latest", "gemini-2.5-flash", "gemini-1.5-flash"]
+    candidate_models = ["gemini-3.5-flash", "gemini-3.5-flash-lite", "gemini-3.8-flash"]
     payload = {
+        "system_instruction": {
+            "parts": [{"text": system_prompt}]
+        },
         "contents": [
             {
                 "role": "user",
-                "parts": [
-                    {"text": f"{system_prompt}\n\nUser Question and Verified Context:\n{user_content}"}
-                ]
+                "parts": [{"text": user_content}]
             }
         ],
         "generationConfig": {
             "temperature": 0.2,
-            "responseMimeType": "application/json"
+            "responseMimeType": "application/json",
+            "thinkingConfig": {
+                "thinkingBudget": 0
+            }
         }
     }
     headers = {
@@ -275,98 +279,182 @@ Please structure the final response tailored to the user's situation using ONLY 
     # Safe deterministic fallback
     return generate_fallback_response(category, question, verified_ctx, language)
 
-def generate_follow_up_answer(category: str, original_question: str, follow_up_question: str, verified_ctx: dict, language: str = "English") -> str:
+def generate_follow_up_answer(
+    category: str,
+    original_question: str,
+    follow_up_question: str,
+    verified_ctx: dict,
+    language: str = "English",
+    chat_history: list = None
+) -> str:
     """
-    Answers conversational follow-up questions from citizens grounded in verified laws.
+    Answers conversational follow-up questions grounded in verified Indian laws.
+    Maintains multi-turn conversation history for contextual, natural responses.
     """
     is_hi = language.lower().startswith("hi")
     gemini_key = os.getenv("GEMINI_API_KEY") or os.getenv("AI_API_KEY")
     openai_key = os.getenv("OPENAI_API_KEY")
+    chat_history = chat_history or []
 
-    # For non-English/Hindi languages, instruct AI to respond in that language
-    lang_note = f" Respond ENTIRELY in {language}." if not is_hi and not language.lower().startswith("en") else ""
+    lang_note = ""
+    if not is_hi and not language.lower().startswith("en"):
+        lang_note = f" IMPORTANT: Respond ENTIRELY in {language}."
 
-    system_prompt = (
-        "You are NyayaMitra AI, an Indian legal information assistant. "
-        "Answer the citizen's follow-up question concisely (max 3-4 bullet points), grounded in Indian law (BNS 2023, BNSS 2023, CPA 2019, RTI 2005). "
-        f"Never invent laws or citation numbers. Always advise consulting DLSA/NALSA (15100) or Tele-Law (14488) for professional counsel.{lang_note}"
-        if not is_hi else
-        "आप न्यायमित्र (NyayaMitra AI) हैं। नागरिक के अनुवर्ती (follow-up) प्रश्न का संक्षिप्त और स्पष्ट उत्तर 3-4 बिंदुओं में दें। "
-        "उत्तर भारतीय कानून (BNS 2023, BNSS 2023, CPA 2019, RTI 2005) पर आधारित होना चाहिए। "
-        "नालसा (15100) या टेली-लॉ (14488) से विधिक परामर्श लेने का सुझाव दें।"
+    if is_hi:
+        system_prompt = (
+            "आप न्यायमित्र (NyayaMitra AI) हैं — एक दोस्ताना, सहानुभूतिपूर्ण भारतीय कानूनी सहायक।"
+            " नागरिक के सवाल का सीधा, स्पष्ट और बातचीत जैसा जवाब दें।"
+            " जवाब में कठोर bullet points की बजाय आम बोलचाल की भाषा में 2-4 वाक्य या छोटे पैराग्राफ में उत्तर दें।"
+            " भारतीय कानून (BNS 2023, BNSS 2023, CPA 2019, RTI 2005) पर आधारित रहें।"
+            " कोई भी कानून या धारा नंबर मत बनाएं जो सत्यापित न हो।"
+            " नालसा (15100) या टेली-लॉ (14488) का सुझाव उचित समय पर दें।"
+            " अगर पिछली बातचीत का संदर्भ हो तो उसे याद रखें।"
+        )
+    else:
+        system_prompt = (
+            f"You are NyayaMitra, a friendly and empathetic Indian legal assistant chatting with a citizen about their {category} issue."
+            " Respond conversationally — like a knowledgeable friend, not a bureaucratic form."
+            " Use 2-4 clear sentences or short paragraphs. Avoid rigid bullet lists unless listing steps."
+            " Stay grounded in Indian law (BNS 2023, BNSS 2023, CPA 2019, RTI 2005)."
+            " Never invent law names or section numbers."
+            " Reference previous conversation context when relevant."
+            f" Suggest NALSA (15100) or Tele-Law (14488) only when truly needed.{lang_note}"
+        )
+
+    laws_str = json.dumps(verified_ctx.get('applicable_laws', []), ensure_ascii=False)
+    context_note = (
+        f"\n\n[Case Context]\nCategory: {category}\n"
+        f"Original Problem: {original_question}\n"
+        f"Relevant Laws: {laws_str}"
     )
 
-    user_prompt = f"""Case Category: {category}
-Original Citizen Problem: {original_question}
-Follow-up Question: {follow_up_question}
-Verified Statutes: {json.dumps(verified_ctx.get('applicable_laws', []), ensure_ascii=False)}
-Language: {language}
-"""
-
+    # Build Gemini multi-turn conversation
     if gemini_key:
         try:
-            ans = query_gemini_api(gemini_key, system_prompt, user_prompt)
-            if ans and len(ans.strip()) > 10:
-                return ans.strip()
-        except Exception:
-            pass
+            candidate_models = ["gemini-3.5-flash", "gemini-3.5-flash-lite", "gemini-3.8-flash"]
+            headers = {
+                "Content-Type": "application/json",
+                "x-goog-api-key": gemini_key
+            }
 
+            # Build contents array with full history
+            contents = []
+            for msg in chat_history:
+                role = "user" if msg.get("role") == "user" else "model"
+                contents.append({
+                    "role": role,
+                    "parts": [{"text": msg.get("content", "")}]
+                })
+            # Add current question (with context note only in first turn or when context is missing)
+            current_q = follow_up_question
+            if not chat_history:
+                current_q = follow_up_question + context_note
+
+            contents.append({"role": "user", "parts": [{"text": current_q}]})
+
+            payload = {
+                "system_instruction": {"parts": [{"text": system_prompt}]},
+                "contents": contents,
+                "generationConfig": {
+                    "temperature": 0.6,
+                    "maxOutputTokens": 2048,
+                    "thinkingConfig": {
+                        "thinkingBudget": 0
+                    }
+                }
+            }
+
+            import requests as _req
+            last_err = None
+            for model in candidate_models:
+                url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
+                try:
+                    resp = _req.post(url, json=payload, headers=headers, timeout=22)
+                    if resp.status_code == 200:
+                        data = resp.json()
+                        candidates = data.get("candidates", [])
+                        if candidates:
+                            ans = candidates[0]["content"]["parts"][0]["text"].strip()
+                            if ans and len(ans) > 10:
+                                return ans
+                    last_err = f"Status {resp.status_code}: {resp.text[:150]}"
+                except Exception as e:
+                    last_err = str(e)
+                    continue
+        except Exception as e:
+            print(f"[Warning] Gemini follow-up error: {e}")
+
+    # OpenAI multi-turn fallback
     if openai_key:
         try:
-            ans = query_openai_api(openai_key, system_prompt, user_prompt)
-            if ans and len(ans.strip()) > 10:
-                return ans.strip()
-        except Exception:
-            pass
+            messages = [{"role": "system", "content": system_prompt + context_note}]
+            for msg in chat_history:
+                messages.append({"role": msg.get("role", "user"), "content": msg.get("content", "")})
+            messages.append({"role": "user", "content": follow_up_question})
 
-    # Intelligent deterministic offline fallback for common citizen follow-ups
+            import requests as _req
+            payload = {
+                "model": "gpt-4o-mini",
+                "messages": messages,
+                "temperature": 0.6,
+                "max_tokens": 400
+            }
+            headers = {"Content-Type": "application/json", "Authorization": f"Bearer {openai_key}"}
+            resp = _req.post("https://api.openai.com/v1/chat/completions", json=payload, headers=headers, timeout=15)
+            if resp.status_code == 200:
+                ans = resp.json()["choices"][0]["message"]["content"].strip()
+                if ans and len(ans) > 10:
+                    return ans
+        except Exception as e:
+            print(f"[Warning] OpenAI follow-up error: {e}")
+
+    # Smart offline fallback
     q_lower = follow_up_question.lower()
     if any(k in q_lower for k in ["police", "refuse", "fir", "मना", "थाना", "पुलिस"]):
         if is_hi:
             return (
-                "यदि पुलिस थाना आपकी प्राथमिकी (FIR) दर्ज करने से मना करता है:\n"
-                "1. भारतीय नागरिक सुरक्षा संहिता (BNSS), 2023 की धारा 173(4) के तहत आप अपनी लिखित शिकायत पंजीकृत डाक (Speed Post) द्वारा सीधे जिले के पुलिस अधीक्षक (SP / DCP) को भेज सकते हैं।\n"
-                "2. आप संबंधित राज्य पुलिस के ऑनलाइन नागरिक पोर्टल या राष्ट्रीय साइबर पोर्टल (cybercrime.gov.in) पर ऑनलाइन ई-एफआईआर/शिकायत दर्ज कर सकते हैं।\n"
-                "3. इसके बाद भी कार्रवाई न होने पर, BNSS की धारा 175(3) के अंतर्गत न्यायिक मजिस्ट्रेट की अदालत में अधिवक्ता या नालसा (15100) के मुफ्त वकील के माध्यम से प्रार्थना पत्र दिया जा सकता है।"
+                "अगर पुलिस FIR दर्ज करने से मना करे, तो घबराएं नहीं — आपके पास विकल्प हैं।\n\n"
+                "BNSS 2023 की धारा 173(4) के तहत आप अपनी शिकायत Speed Post से सीधे SP/DCP को भेज सकते हैं। "
+                "इसके अलावा cybercrime.gov.in पर ऑनलाइन शिकायत भी दर्ज हो सकती है। "
+                "फिर भी कार्रवाई न हो तो नालसा हेल्पलाइन 15100 पर मुफ्त वकील की मदद लें।"
             )
         else:
             return (
-                "If the police station refuses to register your FIR / complaint:\n"
-                "1. Under Section 173(4) of the Bharatiya Nagarik Suraksha Sanhita (BNSS), 2023, you can send the substance of the information in writing by registered post to the Superintendent of Police (SP / DCP).\n"
-                "2. You can submit an online complaint directly via your State Police Citizen Portal or the National Cyber Portal (cybercrime.gov.in).\n"
-                "3. If inaction persists, you may approach the Judicial Magistrate under Section 175(3) of BNSS 2023 with assistance from District Legal Services Authority (DLSA / Helpline 15100)."
+                "Don't worry — you have clear options if the police refuse your FIR.\n\n"
+                "Under Section 173(4) of BNSS 2023, you can send your written complaint by Speed Post directly "
+                "to the SP or DCP of the district. You can also file online at cybercrime.gov.in. "
+                "If nothing moves, a free NALSA lawyer (call 15100) can help you approach the Judicial Magistrate under BNSS Section 175(3)."
             )
-    elif any(k in q_lower for k in ["fee", "cost", "charge", "खर्च", "फीस", "शुल्क"]):
+    elif any(k in q_lower for k in ["fee", "cost", "charge", "free", "खर्च", "फीस", "मुफ्त", "निःशुल्क"]):
         if is_hi:
             return (
-                "कानूनी कार्यवाही व शिकायत हेतु शुल्क संबंधी जानकारी:\n"
-                "1. साइबर हेल्पलाइन 1930 और राष्ट्रीय साइबर पोर्टल (cybercrime.gov.in) पर शिकायत दर्ज करना 100% निःशुल्क है।\n"
-                "2. उपभोक्ता संरक्षण अधिनियम (CPA 2019) के तहत ₹5 लाख तक के दावों के लिए ई-दाखिल पोर्टल पर कोई कोर्ट फीस नहीं लगती।\n"
-                "3. आरटीआई (RTI) आवेदन का वैधानिक शुल्क केवल ₹10 है (बीपीएल कार्ड धारकों के लिए पूर्णतः निःशुल्क)।\n"
-                "4. नालसा (15100) और टेली-लॉ (14488) महिलाओं और पात्र नागरिकों को पूर्णतः निःशुल्क कानूनी सहायता प्रदान करते हैं।"
+                "अच्छी खबर यह है कि ज़्यादातर शिकायतें बिल्कुल मुफ्त हैं!\n\n"
+                "साइबर पोर्टल (1930) और cybercrime.gov.in पर शिकायत करना पूरी तरह निःशुल्क है। "
+                "₹5 लाख तक के उपभोक्ता मामलों में ई-दाखिल पोर्टल पर कोई कोर्ट फीस नहीं लगती। "
+                "RTI आवेदन सिर्फ ₹10 में होता है। नालसा (15100) के ज़रिये मुफ्त वकील भी मिलते हैं।"
             )
         else:
             return (
-                "Statutory fee and cost details:\n"
-                "1. Filing on the National Cyber Crime Reporting Portal (1930 / cybercrime.gov.in) is 100% free.\n"
-                "2. Under the Consumer Protection Act, 2019, claims up to ₹5,00,000 before the District Commission carry zero court fee.\n"
-                "3. RTI applications require a nominal statutory fee of only ₹10 (exempt for Below Poverty Line applicants).\n"
-                "4. Free legal aid and panel lawyers are available at zero cost via NALSA (15100) for eligible citizens under Section 12 of the LSA Act."
+                "Good news — most of the key steps here are completely free.\n\n"
+                "Filing on cybercrime.gov.in or calling 1930 costs nothing. "
+                "Consumer complaints up to ₹5 lakh on e-Daakhil have zero court fee. "
+                "RTI applications are just ₹10. And if you need a lawyer, NALSA (15100) provides free legal aid."
             )
     else:
         if is_hi:
             return (
-                f"आपके प्रश्न '{follow_up_question}' के संदर्भ में प्रक्रियात्मक सलाह:\n"
-                "1. अपने पास मौजूद सभी साक्ष्य (बैंक स्टेटमेंट, रसीदें, स्क्रीनशॉट, लिखित नोटिस) की 2-2 प्रमाणित प्रतियां तैयार रखें।\n"
-                "2. संबंधित आधिकारिक पोर्टल या हेल्पलाइन पर अपनी शिकायत संदर्भ संख्या (Grievance Ref No.) दर्ज कराकर पावती सुरक्षित रखें।\n"
-                "3. किसी भी प्रकार के संशय अथवा जटिल कानूनी स्थिति में नालसा हेल्पलाइन 15100 या टेली-लॉ (14488) पर निःशुल्क विधिक परामर्श प्राप्त करें।"
+                f"आपके सवाल '{follow_up_question}' के बारे में —\n\n"
+                "अभी सबसे ज़रूरी है कि आप अपने सभी सबूत (बैंक स्टेटमेंट, स्क्रीनशॉट, रसीदें) सुरक्षित रखें "
+                "और किसी भी शिकायत की acknowledgment number नोट करें। "
+                "ज़्यादा जटिल सवाल के लिए नालसा हेल्पलाइन 15100 पर मुफ्त में बात करें।"
             )
         else:
             return (
-                f"Procedural guidance for '{follow_up_question}':\n"
-                "1. Keep duplicate certified copies of all primary evidence (bank transactions, receipts, chat records, notices).\n"
-                "2. Quote your formal acknowledgment reference number in all subsequent correspondence with authorities.\n"
-                "3. For tailored procedural assistance, contact the National Legal Services Authority (Helpline: 15100) or Tele-Law (14488)."
+                f"Regarding '{follow_up_question}' —\n\n"
+                "The most important thing right now is to preserve all your evidence "
+                "(bank records, screenshots, receipts) and note down any complaint acknowledgment numbers you have. "
+                "For a more detailed answer specific to your situation, NALSA's free helpline (15100) "
+                "can connect you with a lawyer who can guide you properly."
             )
 
 VISION_OCR_PROMPT = """You are an expert Indian legal aid OCR and transaction receipt parser for NyayaMitra AI.
@@ -391,7 +479,7 @@ def query_gemini_vision(api_key: str, image_bytes: bytes, mime_type: str, prompt
     """
     Multimodal Gemini Vision OCR for receipts and legal documents.
     """
-    candidate_models = ["gemini-3.5-flash", "gemini-flash-latest", "gemini-2.5-flash", "gemini-1.5-flash"]
+    candidate_models = ["gemini-3.5-flash", "gemini-3.5-flash-lite", "gemini-3.8-flash"]
     b64_img = base64.b64encode(image_bytes).decode("utf-8")
     payload = {
         "contents": [
