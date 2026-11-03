@@ -893,20 +893,104 @@ function submitFollowUp(e) {
 }
 
 // ==========================================================================
-// Text-to-Speech (TTS) Voice Readout Controller
+// Text-to-Speech (TTS) Voice Readout Controller (Enhanced Natural Indian & Hindi Pronunciation)
 // ==========================================================================
 let currentSpeechUtterance = null;
 let isSpeaking = false;
 let isPaused = false;
 let speechRate = 1.0;
+let cachedVoices = [];
 
-function getOptimalVoice(langCode) {
-  if (!('speechSynthesis' in window)) return null;
-  const voices = window.speechSynthesis.getVoices();
-  if (langCode === "hi") {
-    return voices.find(v => v.lang.startsWith("hi")) || voices.find(v => v.lang.includes("IN")) || null;
+function refreshVoices() {
+  if ('speechSynthesis' in window) {
+    cachedVoices = window.speechSynthesis.getVoices();
   }
-  return voices.find(v => v.lang === "en-IN") || voices.find(v => v.lang.startsWith("en")) || null;
+}
+if ('speechSynthesis' in window) {
+  refreshVoices();
+  window.speechSynthesis.onvoiceschanged = refreshVoices;
+}
+
+function cleanTextForSpeech(text, isHindi) {
+  if (!text) return "";
+  let clean = text;
+  // Replace symbols and numbers with readable words so TTS doesn't mangle or stumble
+  if (isHindi) {
+    clean = clean
+      .replace(/₹\s*([0-9,]+)/g, "$1 रुपये ")
+      .replace(/Rs\.?\s*([0-9,]+)/gi, "$1 रुपये ")
+      .replace(/INR\s*([0-9,]+)/gi, "$1 रुपये ")
+      .replace(/1930/g, "उन्नीस सौ तीस")
+      .replace(/1915/g, "उन्नीस सौ पंद्रह")
+      .replace(/15100/g, "पंद्रह सौ सौ")
+      .replace(/14488/g, "चौदह चार सौ अठासी")
+      .replace(/FIR/gi, "एफ आई आर")
+      .replace(/OTP/gi, "ओ टी पी")
+      .replace(/UPI/gi, "यू पी आई")
+      .replace(/PIN/gi, "पिन")
+      .replace(/SMS/gi, "एस एम एस")
+      .replace(/cybercrime\.gov\.in/gi, "साइबर क्राइम डॉट जी ओ वी डॉट इन")
+      .replace(/NALSA/gi, "नालसा")
+      .replace(/BNS/gi, "बी एन एस")
+      .replace(/BNSS/gi, "बी एन एस एस")
+      .replace(/RTI/gi, "आर टी आई");
+  } else {
+    clean = clean
+      .replace(/₹\s*([0-9,]+)/g, "$1 Rupees ")
+      .replace(/Rs\.?\s*([0-9,]+)/gi, "$1 Rupees ")
+      .replace(/INR\s*([0-9,]+)/gi, "$1 Rupees ")
+      .replace(/cybercrime\.gov\.in/gi, "cyber crime dot gov dot in");
+  }
+
+  // Remove URLs, harsh markdown characters, brackets, multiple dots
+  clean = clean
+    .replace(/https?:\/\/\S+/gi, "")
+    .replace(/[\*\_#\[\]\(\)\{\}\<\>\\\/\|\~]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  return clean;
+}
+
+function getOptimalVoice(langCode, isHindiText) {
+  if (!('speechSynthesis' in window)) return null;
+  refreshVoices();
+  const voices = cachedVoices.length ? cachedVoices : window.speechSynthesis.getVoices();
+  if (!voices || voices.length === 0) return null;
+
+  if (isHindiText || langCode === "hi") {
+    // Priority order for high-clarity natural Hindi voices:
+    // 1. Google हिन्दी (Chrome Android/Desktop - highest natural quality)
+    // 2. Microsoft Swara / Madhur / Hemant (Edge Windows Natural Voices)
+    // 3. Apple Lekha / Rishi (macOS/iOS Hindi)
+    // 4. Any voice explicitly tagged hi-IN or hi_IN
+    const googleHi = voices.find(v => v.lang.replace('_', '-').startsWith("hi") && /google/i.test(v.name));
+    if (googleHi) return googleHi;
+
+    const naturalHi = voices.find(v => v.lang.replace('_', '-').startsWith("hi") && /natural|online|neural/i.test(v.name));
+    if (naturalHi) return naturalHi;
+
+    const msHi = voices.find(v => v.lang.replace('_', '-').startsWith("hi") && /swara|madhur|hemant|microsoft/i.test(v.name));
+    if (msHi) return msHi;
+
+    const anyHi = voices.find(v => v.lang.replace('_', '-').startsWith("hi"));
+    if (anyHi) return anyHi;
+  }
+
+  // English (Indian accent preferred: Google English India, Microsoft Neerja/Prabhat, Ravi)
+  const googleEnIn = voices.find(v => (v.lang === "en-IN" || v.lang === "en_IN") && /google/i.test(v.name));
+  if (googleEnIn) return googleEnIn;
+
+  const naturalEnIn = voices.find(v => (v.lang === "en-IN" || v.lang === "en_IN") && /natural|online|neural/i.test(v.name));
+  if (naturalEnIn) return naturalEnIn;
+
+  const anyEnIn = voices.find(v => v.lang === "en-IN" || v.lang === "en_IN");
+  if (anyEnIn) return anyEnIn;
+
+  // Fallback to clear general English voice (Google US/UK, Microsoft, or default)
+  return voices.find(v => v.lang.startsWith("en") && /google/i.test(v.name)) ||
+         voices.find(v => v.lang.startsWith("en")) ||
+         voices[0];
 }
 
 function toggleSpeechReadout() {
@@ -936,31 +1020,44 @@ function startSpeechReadout() {
   const explanationEl = document.querySelector(".card-block p");
   const actionItems = document.querySelectorAll(".step-item .step-content");
 
-  let textToRead = "";
-  if (explanationEl) {
-    textToRead += "Legal Guidance Summary: " + explanationEl.innerText.trim() + ". ";
+  const rawExplanation = explanationEl ? explanationEl.innerText.trim() : "";
+  const effectiveLang = window.currentLanguage ? window.currentLanguage.toLowerCase() : currentLang;
+  const isHindi = effectiveLang.startsWith("hi") || /[\u0900-\u097F]/.test(rawExplanation);
+
+  let introPrefix = isHindi ? "न्यायमित्र कानूनी मार्गदर्शन। " : "NyayaMitra Legal Guidance. ";
+  let actionPrefix = isHindi ? " तुरंत उठाने वाले कदम: " : " Immediate action steps: ";
+
+  let speechSegments = [];
+  if (rawExplanation) {
+    speechSegments.push(introPrefix + cleanTextForSpeech(rawExplanation, isHindi));
   }
 
   if (actionItems.length > 0) {
-    textToRead += " Immediate Action Steps: ";
+    let actionsText = actionPrefix;
     actionItems.forEach((act, idx) => {
-      textToRead += `Step ${idx + 1}: ${act.innerText.trim()}. `;
+      const stepLabel = isHindi ? `कदम ${idx + 1}: ` : `Step ${idx + 1}: `;
+      actionsText += `${stepLabel}${cleanTextForSpeech(act.innerText.trim(), isHindi)}. `;
     });
+    speechSegments.push(actionsText);
   }
 
-  if (!textToRead.trim()) {
-    showToast("No legal guidance text found to read.");
+  const fullTextToRead = speechSegments.join(" ");
+
+  if (!fullTextToRead.trim()) {
+    showToast(isHindi ? "बोलने के लिए कोई पाठ नहीं मिला।" : "No legal guidance text found to read.");
     return;
   }
 
-  const isHindi = currentLang === "hi" || /[\u0900-\u097F]/.test(textToRead);
-  const utterance = new SpeechSynthesisUtterance(textToRead);
-  utterance.rate = speechRate;
-  utterance.pitch = 1.0;
-  utterance.lang = VOICE_LANG_MAP[currentLang] || "en-IN";
+  const utterance = new SpeechSynthesisUtterance(fullTextToRead);
+  // Optimal speech pace: slightly slower (0.92x) gives much clearer articulation in Hindi & Indian English
+  utterance.rate = speechRate ? (speechRate * 0.94) : 0.94;
+  utterance.pitch = isHindi ? 1.05 : 1.0;
+  utterance.lang = isHindi ? "hi-IN" : (VOICE_LANG_MAP[currentLang] || "en-IN");
 
-  const voice = getOptimalVoice(currentLang);
-  if (voice) utterance.voice = voice;
+  const voice = getOptimalVoice(isHindi ? "hi" : "en", isHindi);
+  if (voice) {
+    utterance.voice = voice;
+  }
 
   utterance.onstart = () => {
     isSpeaking = true;
